@@ -20,6 +20,12 @@ export class AuthResolver {
     return "Login successful!";
   }
 
+  @Mutation(() => String)
+  async logout(@Context() { res }: { res: Response }) {
+    res.clearCookie("token");
+    return "Logout successful!";
+  }
+
   @Query(() => String)
   async hello(@Context() { req }: { req: Request }) {
     console.log("cookies", req.cookies);
