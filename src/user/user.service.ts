@@ -2,10 +2,12 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
-import { Repository } from "typeorm";
+import { ObjectId as MongoId } from "mongodb";
+import { ObjectId, Repository } from "typeorm";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { User } from "./entities/user.entity";
@@ -46,8 +48,20 @@ export class UserService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(userId: ObjectId) {
+    try {
+      const user = await this.userRepository.findOneBy({
+        _id: new MongoId(userId),
+      });
+      if (!user) {
+        throw new NotFoundException("user does not exist!", {
+          cause: new Error("Invalid credentials!"),
+        });
+      }
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {

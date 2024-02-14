@@ -15,4 +15,8 @@ export class User {
   @Field(() => String)
   @Column({ length: 8 })
   password: string;
+
+  @Field(() => Number)
+  @Column({ default: 100 })
+  watchPoint: number;
 }
