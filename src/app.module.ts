@@ -3,9 +3,9 @@ import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { join } from "path";
+import { AuthModule } from "./auth/auth.module";
 import { User } from "./user/entities/user.entity";
 import { UserModule } from "./user/user.module";
-import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { AuthModule } from "./auth/auth.module";
       driver: ApolloDriver,
       playground: true,
       include: [],
-      context: ({ req }) => ({ headers: req.headers }),
+      context: ({ req, res }) => ({ req, res }),
 
       // Code first
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),

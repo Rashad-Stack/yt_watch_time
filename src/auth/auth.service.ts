@@ -5,8 +5,9 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
+import * as jwt from "jsonwebtoken";
 import { User } from "src/user/entities/user.entity";
-import { Repository } from "typeorm";
+import { ObjectId, Repository } from "typeorm";
 import { LoginInput } from "./dto/login.input";
 
 @Injectable()
@@ -17,6 +18,12 @@ export class AuthService {
 
   private async comparePasswords(password: string, hashedPassword: string) {
     return await bcrypt.compare(password, hashedPassword);
+  }
+
+  private sighAuthToken(userId: ObjectId, userRole: string) {
+    return jwt.sign({ id: userId, role: userRole }, process.env.JWT_SECRET!, {
+      expiresIn: process.env.JWT_EXPIRES_IN!,
+    });
   }
 
   async create(LoginInput: LoginInput) {
@@ -39,7 +46,7 @@ export class AuthService {
           cause: new Error("Invalid credentials!"),
         });
       }
-      return "Login successful!";
+      return this.sighAuthToken(user._id, "user");
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
