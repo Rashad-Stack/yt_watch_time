@@ -6,6 +6,8 @@ import { join } from "path";
 import { AuthModule } from "./auth/auth.module";
 import { User } from "./user/entities/user.entity";
 import { UserModule } from "./user/user.module";
+import { Video } from "./video/entities/video.entity";
+import { VideoModule } from "./video/video.module";
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { UserModule } from "./user/user.module";
       database: "watch-time",
       synchronize: true,
       useUnifiedTopology: true,
-      entities: [User],
+      entities: [User, Video],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -31,6 +33,7 @@ import { UserModule } from "./user/user.module";
     }),
     UserModule,
     AuthModule,
+    VideoModule,
   ],
   controllers: [],
   providers: [],

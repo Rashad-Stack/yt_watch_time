@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
+import { Video } from "src/video/entities/video.entity";
+import { Column, Entity, ObjectId, ObjectIdColumn, OneToMany } from "typeorm";
 
 @ObjectType()
 @Entity("users")
@@ -19,4 +20,12 @@ export class User {
   @Field(() => Number)
   @Column({ default: 100 })
   watchPoint: number;
+
+  @Field(() => String)
+  @Column({ default: "user" })
+  role: string;
+
+  @Field(() => [Video])
+  @OneToMany(() => Video, (video) => video.user)
+  videos: Video[];
 }

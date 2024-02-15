@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
@@ -37,9 +33,7 @@ export class AuthService {
         where: { email: LoginInput.email },
       });
       if (!user) {
-        throw new UnauthorizedException("Invalid credentials!", {
-          cause: new Error("Invalid credentials!"),
-        });
+        throw new UnauthorizedException("Invalid credentials!");
       }
 
       const passwordMatches = await this.comparePasswords(
@@ -47,13 +41,11 @@ export class AuthService {
         user.password,
       );
       if (!passwordMatches) {
-        throw new UnauthorizedException("Invalid credentials!", {
-          cause: new Error("Invalid credentials!"),
-        });
+        throw new UnauthorizedException("Invalid credentials!");
       }
       return this.sighAuthToken(user._id, "user");
     } catch (error) {
-      throw new InternalServerErrorException(error);
+      throw new UnauthorizedException("Invalid credentials!");
     }
   }
 

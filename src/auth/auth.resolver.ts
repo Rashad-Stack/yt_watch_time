@@ -34,7 +34,6 @@ export class AuthResolver {
 
   @Query(() => User)
   async session(@Context() { req }: { req: Request }) {
-    console.log("cookies", req.cookies);
     const { token } = req.cookies;
 
     if (!token) {
