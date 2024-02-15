@@ -1,12 +1,25 @@
-import { Injectable } from "@nestjs/common";
-import { ObjectId } from "typeorm";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "src/user/entities/user.entity";
+import { ObjectId, Repository } from "typeorm";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
+import { Video } from "./entities/video.entity";
 
 @Injectable()
 export class VideoService {
-  create(createVideoInput: CreateVideoInput) {
-    return "This action adds a new video";
+  constructor(
+    @InjectRepository(Video)
+    private readonly videoRepository: Repository<Video>,
+  ) {}
+
+  async create(user: User, createVideoInput: CreateVideoInput) {
+    try {
+      await this.videoRepository.save({ createVideoInput, user: user });
+      return "Your video has been posted successfully!";
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   findAll() {

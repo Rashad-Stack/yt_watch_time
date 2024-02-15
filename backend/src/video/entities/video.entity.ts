@@ -12,7 +12,7 @@ import {
 @ObjectType()
 @Entity("videos")
 export class Video {
-  @Field(() => String, { name: "id" })
+  @Field(() => String)
   @ObjectIdColumn()
   _id: ObjectId;
 
