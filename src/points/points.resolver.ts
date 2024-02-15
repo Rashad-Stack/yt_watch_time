@@ -1,4 +1,7 @@
-import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Context, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Request } from "express";
+import { AuthResolver } from "src/auth/auth.resolver";
+import { AuthService } from "src/auth/auth.service";
 import { CreatePointInput } from "./dto/create-point.input";
 import { UpdatePointInput } from "./dto/update-point.input";
 import { Point } from "./entities/point.entity";
@@ -6,17 +9,23 @@ import { PointsService } from "./points.service";
 
 @Resolver(() => Point)
 export class PointsResolver {
-  constructor(private readonly pointsService: PointsService) {}
+  constructor(
+    private readonly pointsService: PointsService,
+    private readonly authService: AuthService,
+    private readonly authResolver: AuthResolver,
+  ) {}
 
-  @Mutation(() => Point)
-  createPoint(@Args("createPointInput") createPointInput: CreatePointInput) {
-    return this.pointsService.create(createPointInput);
+  @Mutation(() => String)
+  // ...
+  async createPoint(
+    @Args("createPointInput") createPointInput: CreatePointInput,
+    @Context() { req }: { req: Request },
+  ) {
+    const user = await this.authResolver.session({ req });
+    return this.pointsService.create(user, createPointInput);
   }
 
-  @Query(() => [Point], { name: "points" })
-  findAll() {
-    return this.pointsService.findAll();
-  }
+  // ...
 
   @Query(() => Point, { name: "point" })
   findOne(@Args("id", { type: () => Int }) id: number) {
