@@ -18,14 +18,21 @@ export class User {
   password: string;
 
   @Field(() => Number)
-  @Column({ default: 100 })
+  @Column({ default: 100 }) // Default value for watchPoint
   watchPoint: number;
 
   @Field(() => String)
-  @Column({ default: "user" })
+  @Column({ default: "user" }) // Default value for role
   role: string;
 
   @Field(() => [Video])
   @OneToMany(() => Video, (video) => video.user)
   videos: Video[];
+
+  constructor(partial: Partial<User>) {
+    Object.assign(this, partial);
+    // Set default values if not provided
+    this.watchPoint = this.watchPoint || 100;
+    this.role = this.role || "user";
+  }
 }

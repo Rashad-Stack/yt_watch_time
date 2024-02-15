@@ -8,6 +8,7 @@ import { User } from "./user/entities/user.entity";
 import { UserModule } from "./user/user.module";
 import { Video } from "./video/entities/video.entity";
 import { VideoModule } from "./video/video.module";
+import { PointsModule } from "./points/points.module";
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { VideoModule } from "./video/video.module";
     UserModule,
     AuthModule,
     VideoModule,
+    PointsModule,
   ],
   controllers: [],
   providers: [],

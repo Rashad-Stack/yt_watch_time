@@ -25,11 +25,16 @@ export class UserService {
 
   async create(createUserInput: CreateUserInput) {
     try {
-      createUserInput.password = this.hashPassword(createUserInput.password);
-      await this.userRepository.save(createUserInput);
+      // Create a new instance of the User entity and set its properties
+      const newUser = new User(createUserInput);
+
+      await this.userRepository.save({
+        ...newUser,
+        password: this.hashPassword(newUser.password),
+      });
+
       return "User created successfully!";
     } catch (error) {
-      console.log(error.code);
       if (error.code === 11000) {
         throw new ConflictException("Email already exists", {
           cause: new Error(),
