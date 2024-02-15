@@ -1,0 +1,46 @@
+import { gql } from "@apollo/client";
+
+export const GET_USERS = gql`
+  query {
+    users {
+      _id
+      email
+      password
+    }
+  }
+`;
+
+export const GET_SESSION = gql`
+  query {
+    session {
+      _id
+      email
+      watchPoint
+    }
+  }
+`;
+
+// Mutations
+export const LOGIN = gql`
+  mutation Login($loginInput: LoginInput!) {
+    login(loginInput: $loginInput)
+  }
+`;
+
+export const LOGOUT = gql`
+  mutation {
+    logout
+  }
+`;
+
+export const REGISTER = gql`
+  mutation Register($createUserInput: CreateUserInput!) {
+    createUser(createUserInput: $createUserInput)
+  }
+`;
+
+export const BUY_POINTS = gql`
+  mutation BuyPoints($createPointInput: CreatePointInput!) {
+    createPoint(createPointInput: $createPointInput)
+  }
+`;
