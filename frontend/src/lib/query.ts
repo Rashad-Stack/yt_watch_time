@@ -16,6 +16,7 @@ export const GET_SESSION = gql`
       _id
       email
       watchPoint
+      role
     }
   }
 `;
@@ -42,5 +43,11 @@ export const REGISTER = gql`
 export const BUY_POINTS = gql`
   mutation BuyPoints($createPointInput: CreatePointInput!) {
     createPoint(createPointInput: $createPointInput)
+  }
+`;
+
+export const POST_VIDEO = gql`
+  mutation BuyPoints($createVideoInput: CreateVideoInput!) {
+    createVideo(createVideoInput: $createVideoInput)
   }
 `;

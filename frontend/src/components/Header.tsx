@@ -1,5 +1,6 @@
 import { Button, Navbar } from "flowbite-react";
 import { useAuth } from "../hooks/useAuth";
+import AddVideo from "./AddVideo";
 import AppModal from "./AppModal";
 import BuyPoint from "./BuyPoint";
 import FormTab from "./FormTab";
@@ -89,6 +90,25 @@ export default function Header() {
                 </Navbar.Link>
               )
             )}
+            {loading ? (
+              <div className="skeleton h-4 w-32 !rounded-lg" />
+            ) : (
+              isAuthenticated && (
+                <Navbar.Link
+                  className="cursor-pointer"
+                  onClick={() => {
+                    {
+                      const dialog = document.getElementById(
+                        "addVideo",
+                      ) as HTMLDialogElement;
+                      dialog.showModal();
+                    }
+                  }}
+                >
+                  Add Video
+                </Navbar.Link>
+              )
+            )}
           </Navbar.Collapse>
         </Navbar>
       </header>
@@ -97,6 +117,9 @@ export default function Header() {
       </AppModal>
       <AppModal modalName="buyPoint">
         <BuyPoint />
+      </AppModal>
+      <AppModal modalName="addVideo">
+        <AddVideo />
       </AppModal>
     </>
   );

@@ -12,6 +12,7 @@ type User = {
   id: string;
   email: string;
   watchPoint: number;
+  role: string;
 };
 
 type Context = {
