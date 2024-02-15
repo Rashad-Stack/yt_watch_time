@@ -1,8 +1,8 @@
-import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
-import { PointsService } from "./points.service";
-import { Point } from "./entities/point.entity";
+import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { CreatePointInput } from "./dto/create-point.input";
 import { UpdatePointInput } from "./dto/update-point.input";
+import { Point } from "./entities/point.entity";
+import { PointsService } from "./points.service";
 
 @Resolver(() => Point)
 export class PointsResolver {
@@ -24,7 +24,7 @@ export class PointsResolver {
   }
 
   @Mutation(() => Point)
-  updatePoint(@Args("updatePointInput") updatePointInput: UpdatePointInput) {
+  updatePoint(@Args("id") updatePointInput: UpdatePointInput) {
     return this.pointsService.update(updatePointInput.id, updatePointInput);
   }
 

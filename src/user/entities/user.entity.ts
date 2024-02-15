@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { Point } from "src/points/entities/point.entity";
 import { Video } from "src/video/entities/video.entity";
 import { Column, Entity, ObjectId, ObjectIdColumn, OneToMany } from "typeorm";
 
@@ -28,6 +29,10 @@ export class User {
   @Field(() => [Video])
   @OneToMany(() => Video, (video) => video.user)
   videos: Video[];
+
+  @Field(() => [Point])
+  @OneToMany(() => Point, (point) => point.user)
+  points: Point[];
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

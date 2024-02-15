@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { ObjectId } from "typeorm";
 import { CreatePointInput } from "./dto/create-point.input";
 import { UpdatePointInput } from "./dto/update-point.input";
 
@@ -16,7 +17,7 @@ export class PointsService {
     return `This action returns a #${id} point`;
   }
 
-  update(id: number, updatePointInput: UpdatePointInput) {
+  update(id: ObjectId, updatePointInput: UpdatePointInput) {
     return `This action updates a #${id} point`;
   }
 

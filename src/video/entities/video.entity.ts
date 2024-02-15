@@ -4,9 +4,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
   ObjectId,
   ObjectIdColumn,
+  OneToOne,
 } from "typeorm";
 
 @ObjectType()
@@ -25,7 +25,7 @@ export class Video {
   url: string;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.videos)
+  @OneToOne(() => User, (user) => user.videos)
   user: User;
 
   @CreateDateColumn()
