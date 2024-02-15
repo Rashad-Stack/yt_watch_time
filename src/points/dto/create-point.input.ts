@@ -7,7 +7,7 @@ import {
   Min,
 } from "class-validator";
 
-@InputType("BuyPointInput")
+@InputType()
 export class CreatePointInput {
   @Field(() => Number)
   @IsNotEmpty()

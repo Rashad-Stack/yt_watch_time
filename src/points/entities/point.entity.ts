@@ -3,9 +3,9 @@ import { User } from "src/user/entities/user.entity";
 import { Column, Entity, ObjectId, ObjectIdColumn, OneToOne } from "typeorm";
 
 @ObjectType()
-@Entity("buyPoints")
+@Entity("request_points")
 export class Point {
-  @Field(() => String, { name: "id" })
+  @Field(() => String)
   @ObjectIdColumn()
   _id: ObjectId;
 

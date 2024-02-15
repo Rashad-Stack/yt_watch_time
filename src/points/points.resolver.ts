@@ -16,7 +16,6 @@ export class PointsResolver {
   ) {}
 
   @Mutation(() => String)
-  // ...
   async createPoint(
     @Args("createPointInput") createPointInput: CreatePointInput,
     @Context() { req }: { req: Request },
@@ -24,8 +23,6 @@ export class PointsResolver {
     const user = await this.authResolver.session({ req });
     return this.pointsService.create(user, createPointInput);
   }
-
-  // ...
 
   @Query(() => Point, { name: "point" })
   findOne(@Args("id", { type: () => Int }) id: number) {
