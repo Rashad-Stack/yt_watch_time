@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ObjectId } from "mongodb";
+import { User } from "src/user/entities/user.entity";
 import { Repository } from "typeorm";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
@@ -13,9 +14,9 @@ export class VideoService {
     private readonly videoRepository: Repository<Video>,
   ) {}
 
-  async create(createVideoInput: CreateVideoInput) {
+  async create(user: User, createVideoInput: CreateVideoInput) {
     try {
-      await this.videoRepository.save({ ...createVideoInput });
+      await this.videoRepository.save({ ...createVideoInput, user: user });
       return "Your video has been posted successfully!";
     } catch (error) {
       throw new InternalServerErrorException();

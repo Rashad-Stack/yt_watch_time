@@ -26,8 +26,8 @@ export class VideoResolver {
     if (!isYoutubeUrl) {
       throw new BadRequestException("Invalid Youtube video URL");
     }
-    // const user = await this.authResolver.session({ req });
-    return this.videoService.create(createVideoInput);
+    const user = await this.authResolver.session({ req });
+    return this.videoService.create(user, createVideoInput);
   }
 
   @Query(() => [Video], { name: "videos" })

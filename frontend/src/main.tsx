@@ -8,7 +8,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 import App from "./App.tsx";
-import AuthProvider from "./context/authcontext.tsx";
+import AppContextProvider from "./context/AppContextProvider.tsx";
 import "./index.css";
 
 const link = createHttpLink({
@@ -26,9 +26,9 @@ const client = new ApolloClient({
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <AuthProvider>
+      <AppContextProvider>
         <App />
-      </AuthProvider>
+      </AppContextProvider>
       <Toaster position="top-center" reverseOrder={false} />
     </ApolloProvider>
   </React.StrictMode>,
