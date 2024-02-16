@@ -1,12 +1,11 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { Button, Label, TextInput } from "flowbite-react";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
-import { useVideos } from "../hooks/useVideos";
 import { handleError } from "../lib/handleError";
-import { POST_VIDEO } from "../lib/query";
+import { GET_VIDEOS, POST_VIDEO } from "../lib/query";
 
 type Props = {
   setVideoUrl: React.Dispatch<React.SetStateAction<string>>;
@@ -20,7 +19,7 @@ type Inputs = {
 
 export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
   const [addVideo, { loading }] = useMutation(POST_VIDEO);
-  const { refetch } = useVideos();
+  const { refetch } = useQuery(GET_VIDEOS);
   const { clearUser } = useAuth();
 
   const {

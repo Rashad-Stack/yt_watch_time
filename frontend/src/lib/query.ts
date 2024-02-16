@@ -23,11 +23,14 @@ export const GET_SESSION = gql`
 `;
 
 export const GET_VIDEOS = gql`
-  query GetVideos($page: Int, $limit: Int) {
-    videos(page: $page, limit: $limit) {
-      _id
-      title
-      url
+  query GetAllVideos($limit: Float) {
+    allVideos(limit: $limit) {
+      totalVideos
+      videos {
+        _id
+        title
+        url
+      }
     }
   }
 `;

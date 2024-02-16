@@ -31,12 +31,11 @@ export class VideoResolver {
     return this.videoService.create(user, createVideoInput);
   }
 
-  @Query(() => PaginateVideo, { name: "videos" })
+  @Query(() => PaginateVideo, { name: "allVideos" })
   async findAll(
-    @Args("page", { defaultValue: 1 }) page: number,
     @Args("limit", { defaultValue: 12 }) limit: number,
   ): Promise<PaginateVideo> {
-    return this.videoService.findAll(page, limit);
+    return this.videoService.findAll(limit);
   }
 
   @Query(() => Video, { name: "video" })

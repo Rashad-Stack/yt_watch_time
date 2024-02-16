@@ -1,4 +1,4 @@
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ErrorPage from "./pages/Error";
 import Home from "./pages/Home";
@@ -8,31 +8,29 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <Routes>
+      <Route
+        element={
+          <Layout>
+            <Outlet />
+          </Layout>
+        }
+      >
+        <Route index element={<Home />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        {/* Protected */}
         <Route
           element={
-            <Layout>
+            <ProtectedRoute>
               <Outlet />
-            </Layout>
+            </ProtectedRoute>
           }
         >
-          <Route index element={<Home />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          {/* Protected */}
-          <Route
-            element={
-              <ProtectedRoute>
-                <Outlet />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/post-video" element={<PostVideo />} />
-          </Route>
+          <Route path="/post-video" element={<PostVideo />} />
         </Route>
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-    </BrowserRouter>
+      </Route>
+      <Route path="*" element={<ErrorPage />} />
+    </Routes>
   );
 }
 

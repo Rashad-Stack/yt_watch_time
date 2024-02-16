@@ -27,15 +27,18 @@ export class VideoService {
     }
   }
 
-  async findAll(page: number, limit: number): Promise<PaginateVideo> {
+  async findAll(limit: number): Promise<PaginateVideo> {
     try {
       const [videos, totalVideos] = await this.videoRepository.findAndCount({
         relations: ["user"],
         take: limit,
-        skip: (page - 1) * limit,
+        order: { createdAt: "DESC" },
       });
 
-      return { videos, totalVideos };
+      return {
+        videos,
+        totalVideos,
+      };
     } catch (error) {
       throw new InternalServerErrorException();
     }
