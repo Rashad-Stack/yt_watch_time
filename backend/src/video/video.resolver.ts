@@ -5,6 +5,7 @@ import { AuthResolver } from "src/auth/auth.resolver";
 import { ObjectId } from "typeorm";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
+import { PaginateVideo } from "./dto/videos.dto";
 import { Video } from "./entities/video.entity";
 import { VideoService } from "./video.service";
 
@@ -30,10 +31,12 @@ export class VideoResolver {
     return this.videoService.create(user, createVideoInput);
   }
 
-  @Query(() => [Video], { name: "videos" })
-  async findAll(): Promise<Video[]> {
-    // await this.authResolver.session({ req });
-    return this.videoService.findAll();
+  @Query(() => PaginateVideo, { name: "videos" })
+  async findAll(
+    @Args("page", { defaultValue: 1 }) page: number,
+    @Args("limit", { defaultValue: 12 }) limit: number,
+  ): Promise<PaginateVideo> {
+    return this.videoService.findAll(page, limit);
   }
 
   @Query(() => Video, { name: "video" })

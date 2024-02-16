@@ -23,8 +23,8 @@ export const GET_SESSION = gql`
 `;
 
 export const GET_VIDEOS = gql`
-  query {
-    videos {
+  query GetVideos($page: Int, $limit: Int) {
+    videos(page: $page, limit: $limit) {
       _id
       title
       url

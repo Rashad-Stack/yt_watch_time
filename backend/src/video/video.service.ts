@@ -5,6 +5,7 @@ import { User } from "src/user/entities/user.entity";
 import { Repository } from "typeorm";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
+import { PaginateVideo } from "./dto/videos.dto";
 import { Video } from "./entities/video.entity";
 
 @Injectable()
@@ -26,11 +27,15 @@ export class VideoService {
     }
   }
 
-  async findAll(): Promise<Video[]> {
+  async findAll(page: number, limit: number): Promise<PaginateVideo> {
     try {
-      const videos = await this.videoRepository.find({ relations: ["user"] });
-      console.log(videos);
-      return videos;
+      const [videos, totalVideos] = await this.videoRepository.findAndCount({
+        relations: ["user"],
+        take: limit,
+        skip: (page - 1) * limit,
+      });
+
+      return { videos, totalVideos };
     } catch (error) {
       throw new InternalServerErrorException();
     }
@@ -50,7 +55,7 @@ export class VideoService {
   }
 
   update(id: ObjectId, updateVideoInput: UpdateVideoInput) {
-    return `This action updates a #${id} video`;
+    return updateVideoInput;
   }
 
   remove(id: ObjectId) {
