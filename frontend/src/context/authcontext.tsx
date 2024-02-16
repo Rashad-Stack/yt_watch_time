@@ -53,7 +53,9 @@ export const AuthContext = createContext<Context | undefined>(undefined);
 export default function AuthProvider({ children }: Props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const { data, refetch, loading } = useQuery(GET_SESSION);
+  const { data, refetch, loading, error } = useQuery(GET_SESSION);
+
+  console.log(error);
 
   function setUser() {
     refetch();
@@ -73,10 +75,15 @@ export default function AuthProvider({ children }: Props) {
           payload: { ...data?.session },
         });
       }
+
+      if (error) {
+        return dispatch({ type: ActionType.LOGOUT });
+      }
+
       dispatch({ type: ActionType.LOGOUT });
     }
     setCurrentUser();
-  }, [data]);
+  }, [data, error]);
 
   return (
     <AuthContext.Provider value={{ ...state, setUser, clearUser, loading }}>

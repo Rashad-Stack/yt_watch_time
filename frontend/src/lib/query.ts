@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 
+// QUERIES
 export const GET_USERS = gql`
   query {
     users {
@@ -21,7 +22,16 @@ export const GET_SESSION = gql`
   }
 `;
 
-// Mutations
+export const GET_VIDEOS = gql`
+  query {
+    videos {
+      title
+      url
+    }
+  }
+`;
+
+// MUTATIONS
 export const LOGIN = gql`
   mutation Login($loginInput: LoginInput!) {
     login(loginInput: $loginInput)

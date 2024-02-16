@@ -1,10 +1,10 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { ObjectId } from "mongodb";
 import { User } from "src/user/entities/user.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
-  ObjectId,
   ObjectIdColumn,
   OneToOne,
 } from "typeorm";
@@ -17,11 +17,11 @@ export class Video {
   _id: ObjectId;
 
   @Field(() => String)
-  @Column(() => String)
+  @Column({ length: 200 })
   title: string;
 
   @Field(() => String)
-  @Column(() => String)
+  @Column()
   url: string;
 
   @Field(() => User)

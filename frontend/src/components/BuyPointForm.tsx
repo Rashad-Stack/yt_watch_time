@@ -62,7 +62,11 @@ export default function BuyPointForm() {
           <Controller
             name="price"
             control={control}
-            rules={{ min: 1 }}
+            rules={{
+              validate: (value) =>
+                value < 1 || "Can not buy less than 10 points!",
+              min: 1,
+            }}
             render={({ field }) => {
               const { onChange, value } = field;
               return (
@@ -95,7 +99,9 @@ export default function BuyPointForm() {
             }}
           />
         </div>
-        {errors.points && <span>Can not buy less than 10 points!</span>}
+        {errors.points && (
+          <span className="text-red-500">{errors.phone?.message}</span>
+        )}
       </div>
       <div>
         <div className="mb-2 block">
@@ -108,7 +114,9 @@ export default function BuyPointForm() {
           required
           {...register("phone")}
         />
-        {errors.phone && <span>This field is required</span>}
+        {errors.phone && (
+          <span className="text-red-500">{errors.phone.message}</span>
+        )}
       </div>
       <div>
         <div className="mb-2 block">
@@ -121,7 +129,9 @@ export default function BuyPointForm() {
           placeholder="TrxID 123PC2D3H4"
           {...register("trxId")}
         />
-        {errors.trxId && <span>This field is required</span>}
+        {errors.trxId && (
+          <span className="text-red-500">{errors.trxId.message}</span>
+        )}
       </div>
       <Button type="submit">
         {loading ? (

@@ -1,0 +1,96 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreatePointInput {
+  phone: String!
+  points: Float!
+  price: Float!
+  trxId: String!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+}
+
+input CreateVideoInput {
+  title: String!
+  url: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+  remember: Boolean!
+}
+
+type Mutation {
+  createPoint(createPointInput: CreatePointInput!): String!
+  createUser(createUserInput: CreateUserInput!): String!
+  createVideo(createVideoInput: CreateVideoInput!): String!
+  login(loginInput: LoginInput!): String!
+  logout: String!
+  removePoint(id: Int!): Point!
+  removeUser(id: Int!): User!
+  removeVideo(id: String!): Video!
+  updatePoint(id: UpdatePointInput!): Point!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  updateVideo(updateVideoInput: UpdateVideoInput!): Video!
+}
+
+type Point {
+  _id: String!
+  isApproved: Boolean!
+  phone: String!
+  points: Int!
+  price: Int!
+  trxId: String!
+  user: User!
+}
+
+type Query {
+  point(id: Int!): Point!
+  session: User!
+  user(id: String!): User!
+  users: [User!]!
+  video(id: String!): Video!
+  videos: [Video!]!
+}
+
+input UpdatePointInput {
+  id: String!
+  phone: String
+  points: Float!
+  price: Float
+  trxId: String
+}
+
+input UpdateUserInput {
+  email: String
+  id: Float!
+  password: String!
+}
+
+input UpdateVideoInput {
+  id: String!
+  title: String!
+  url: String!
+}
+
+type User {
+  _id: String!
+  email: String!
+  password: String!
+  points: [Point!]!
+  role: String!
+  videos: [Video!]!
+  watchPoint: Float!
+}
+
+type Video {
+  _id: String!
+  title: String!
+  url: String!
+  user: User!
+}

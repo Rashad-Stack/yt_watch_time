@@ -10,23 +10,23 @@ export class Point {
   _id: ObjectId;
 
   @Field(() => Int)
-  @Column(() => Number)
+  @Column()
   points: number;
 
   @Field(() => Int)
-  @Column(() => Number)
+  @Column()
   price: number;
 
   @Field(() => String)
-  @Column(() => String)
+  @Column()
   phone: string;
 
   @Field(() => String)
-  @Column(() => String)
+  @Column()
   trxId: string;
 
   @Field(() => Boolean)
-  @Column(() => Boolean)
+  @Column({ default: false })
   isApproved: boolean;
 
   @Field(() => User)

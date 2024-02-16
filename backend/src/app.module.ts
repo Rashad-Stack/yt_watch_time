@@ -21,6 +21,7 @@ import { VideoModule } from "./video/video.module";
       database: "watch-time",
       synchronize: true,
       useUnifiedTopology: true,
+      useNewUrlParser: true,
       entities: [User, Video, Point],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({

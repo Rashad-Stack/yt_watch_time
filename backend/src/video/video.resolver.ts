@@ -26,18 +26,21 @@ export class VideoResolver {
     if (!isYoutubeUrl) {
       throw new BadRequestException("Invalid Youtube video URL");
     }
-    const user = await this.authResolver.session({ req });
-    return this.videoService.create(user, createVideoInput);
+    // const user = await this.authResolver.session({ req });
+    return this.videoService.create(createVideoInput);
   }
 
-  @Query(() => [Video], { name: "video" })
-  findAll() {
+  @Query(() => [Video], { name: "videos" })
+  async findAll(@Context() { req }: { req: Request }): Promise<Video[]> {
+    // await this.authResolver.session({ req });
     return this.videoService.findAll();
   }
 
   @Query(() => Video, { name: "video" })
-  findOne(@Args("id", { type: () => String }) id: ObjectId) {
-    return this.videoService.findOne(id);
+  async findOne(
+    @Args("id", { type: () => String }) id: ObjectId,
+  ): Promise<Video> {
+    return await this.videoService.findOne(id);
   }
 
   @Mutation(() => Video)

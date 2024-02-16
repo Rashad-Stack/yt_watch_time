@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "src/user/entities/user.entity";
-import { ObjectId, Repository } from "typeorm";
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
 import { Video } from "./entities/video.entity";
@@ -13,21 +13,36 @@ export class VideoService {
     private readonly videoRepository: Repository<Video>,
   ) {}
 
-  async create(user: User, createVideoInput: CreateVideoInput) {
+  async create(createVideoInput: CreateVideoInput) {
     try {
-      await this.videoRepository.save({ createVideoInput, user: user });
+      await this.videoRepository.save({ ...createVideoInput });
       return "Your video has been posted successfully!";
     } catch (error) {
       throw new InternalServerErrorException();
     }
   }
 
-  findAll() {
-    return `This action returns all video`;
+  async findAll(): Promise<Video[]> {
+    try {
+      const videos = await this.videoRepository.find({ relations: ["user"] });
+      console.log(videos);
+      return videos;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  findOne(id: ObjectId) {
-    return `This action returns a #${id} video`;
+  async findOne(id: ObjectId): Promise<Video> {
+    try {
+      const video = await this.videoRepository.findOne({
+        where: { _id: new ObjectId(id) },
+        relations: ["user"],
+      });
+
+      return video;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   update(id: ObjectId, updateVideoInput: UpdateVideoInput) {

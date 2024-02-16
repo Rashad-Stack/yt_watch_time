@@ -45,9 +45,9 @@ export class UserService {
     }
   }
 
-  findAll() {
+  async findAll() {
     try {
-      return this.userRepository.find();
+      return await this.userRepository.find();
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

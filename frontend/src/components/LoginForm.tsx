@@ -75,7 +75,9 @@ export default function Login() {
           required
           {...register("email")}
         />
-        {errors.email && <span>This field is required</span>}
+        {errors.email && (
+          <span className="text-red-500">{errors.email.message}</span>
+        )}
       </div>
       <div>
         <div className="mb-2 block">
@@ -87,7 +89,9 @@ export default function Login() {
           required
           {...register("password")}
         />
-        {errors.password && <span>This field is required</span>}
+        {errors.password && (
+          <span className="text-red-500">{errors.password.message}</span>
+        )}
       </div>
       <div className="flex items-center gap-2">
         <Checkbox id="remember" {...register("remember")} />

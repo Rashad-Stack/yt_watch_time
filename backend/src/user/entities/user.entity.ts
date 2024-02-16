@@ -1,7 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { ObjectId } from "mongodb";
 import { Point } from "src/points/entities/point.entity";
 import { Video } from "src/video/entities/video.entity";
-import { Column, Entity, ObjectId, ObjectIdColumn, OneToMany } from "typeorm";
+import { Column, Entity, ObjectIdColumn, OneToMany } from "typeorm";
 
 @ObjectType()
 @Entity("users")
@@ -28,7 +29,7 @@ export class User {
 
   @Field(() => [Video])
   @OneToMany(() => Video, (video) => video.user)
-  videos: Video[];
+  videos: Video;
 
   @Field(() => [Point])
   @OneToMany(() => Point, (point) => point.user)
