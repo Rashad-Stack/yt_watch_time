@@ -25,6 +25,7 @@ export const GET_SESSION = gql`
 export const GET_VIDEOS = gql`
   query {
     videos {
+      _id
       title
       url
     }
@@ -58,6 +59,10 @@ export const BUY_POINTS = gql`
 
 export const POST_VIDEO = gql`
   mutation BuyPoints($createVideoInput: CreateVideoInput!) {
-    createVideo(createVideoInput: $createVideoInput)
+    createVideo(createVideoInput: $createVideoInput) {
+      _id
+      title
+      url
+    }
   }
 `;

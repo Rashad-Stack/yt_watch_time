@@ -3,11 +3,14 @@ import { Button, Label, TextInput } from "flowbite-react";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useAuth } from "../hooks/useAuth";
+import { useVideos } from "../hooks/useVideos";
 import { handleError } from "../lib/handleError";
 import { POST_VIDEO } from "../lib/query";
 
 type Props = {
   setVideoUrl: React.Dispatch<React.SetStateAction<string>>;
+  videoLength: boolean;
 };
 
 type Inputs = {
@@ -15,12 +18,16 @@ type Inputs = {
   url: string;
 };
 
-export default function AddVideoForm({ setVideoUrl }: Props) {
+export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
   const [addVideo, { loading }] = useMutation(POST_VIDEO);
+  const { refetch } = useVideos();
+  const { clearUser } = useAuth();
+
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<Inputs>();
 
@@ -35,14 +42,17 @@ export default function AddVideoForm({ setVideoUrl }: Props) {
       }),
       {
         loading: "adding...",
-        success: ({ data }) => {
+        success: () => {
+          reset();
+          setVideoUrl("");
+          refetch();
           const dialog = document.getElementById(
             "addVideo",
           ) as HTMLDialogElement;
           dialog.close();
-          return data.createVideo;
+          return "Video added successfully";
         },
-        error: (error) => handleError(error),
+        error: (error) => handleError(error, clearUser),
       },
     );
   };
@@ -67,7 +77,9 @@ export default function AddVideoForm({ setVideoUrl }: Props) {
           })}
           placeholder="Example tips for React beginners"
         />
-        {errors.title && <span>{errors.title?.message}</span>}
+        {errors.title && (
+          <span className="text-red-500">{errors.title?.message}</span>
+        )}
       </div>
       <div>
         <div className="mb-2 block">
@@ -78,8 +90,12 @@ export default function AddVideoForm({ setVideoUrl }: Props) {
           control={control}
           rules={{
             required: true,
-            validate: (value) =>
-              urls.some((url) => value.includes(url)) || "Invalid youtube URL",
+            validate: (value) => {
+              if (!videoLength) return "video length is too short!";
+              return (
+                urls.some((url) => value.includes(url)) || "Invalid youtube URL"
+              );
+            },
           }}
           render={({ field }) => {
             const { onChange, value } = field;
@@ -99,7 +115,9 @@ export default function AddVideoForm({ setVideoUrl }: Props) {
             );
           }}
         />
-        {errors.url && <span>{errors.url?.message}</span>}
+        {errors.url && (
+          <span className="text-red-500">{errors.url?.message}</span>
+        )}
       </div>
       <Button type="submit">
         {loading ? (

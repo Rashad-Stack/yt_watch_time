@@ -16,8 +16,11 @@ export class VideoService {
 
   async create(user: User, createVideoInput: CreateVideoInput) {
     try {
-      await this.videoRepository.save({ ...createVideoInput, user: user });
-      return "Your video has been posted successfully!";
+      const video = await this.videoRepository.save({
+        ...createVideoInput,
+        user: user,
+      });
+      return video;
     } catch (error) {
       throw new InternalServerErrorException();
     }

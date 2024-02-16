@@ -15,11 +15,11 @@ export class VideoResolver {
     private readonly authResolver: AuthResolver,
   ) {}
 
-  @Mutation(() => String)
+  @Mutation(() => Video)
   async createVideo(
     @Args("createVideoInput") createVideoInput: CreateVideoInput,
     @Context() { req }: { req: Request },
-  ) {
+  ): Promise<Video> {
     const urls = ["youtu.be", "youtube"];
     const isYoutubeUrl = urls.some((url) => createVideoInput.url.includes(url));
 
@@ -31,7 +31,7 @@ export class VideoResolver {
   }
 
   @Query(() => [Video], { name: "videos" })
-  async findAll(@Context() { req }: { req: Request }): Promise<Video[]> {
+  async findAll(): Promise<Video[]> {
     // await this.authResolver.session({ req });
     return this.videoService.findAll();
   }

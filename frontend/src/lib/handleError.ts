@@ -1,6 +1,9 @@
 import { ApolloError } from "@apollo/client";
 import { isArray } from "@apollo/client/utilities";
 import { GraphQLError } from "graphql";
+import React from "react";
+import { AuthAction } from "../context/authcontext";
+import { ActionType } from "../types";
 
 type UnknownError = Error & { message: string[] };
 
@@ -15,7 +18,10 @@ const unknownError = (error: UnknownError) => {
   return error?.message || "Something went wrong";
 };
 
-export const handleError = (error: Error | ApolloError | undefined): string => {
+export const handleError = (
+  error: Error | ApolloError | undefined,
+  clearUser?: React.Dispatch<AuthAction>,
+): string => {
   console.log("full", error);
 
   if (error instanceof ApolloError) {
@@ -27,6 +33,7 @@ export const handleError = (error: Error | ApolloError | undefined): string => {
           return unknownError(refactorError);
         }
         if (err.message === "jwt expired") {
+          clearUser?.({ type: ActionType.LOGOUT });
           return "Session expired. Please login again.";
         }
         return err.message;

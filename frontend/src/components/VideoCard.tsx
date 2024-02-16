@@ -14,16 +14,21 @@ export default function VideoCard({ video }: Props) {
 
   return (
     <Card
-      className="flex max-w-sm flex-col items-center"
+      className="overflow-hidden rounded-lg bg-white text-neutral-900 shadow-lg transition-all hover:shadow-xl dark:bg-neutral-800 dark:text-neutral-200"
       renderImage={() => (
-        <ReactPlayer
-          url={video.url}
-          width={384}
-          height={200}
-          volume={1}
-          muted={muted}
-          onProgress={(state) => setPlayed((state.playedSeconds * 100) / 40)}
-        />
+        <div className="flex flex-col items-center">
+          <ReactPlayer
+            url={video.url}
+            volume={1}
+            muted={muted}
+            onProgress={(state) => setPlayed((state.playedSeconds * 100) / 40)}
+            style={{
+              maxWidth: "370px",
+              maxHeight: "200px",
+              width: "100%",
+            }}
+          />
+        </div>
       )}
     >
       <div className="space-y-2">
@@ -31,9 +36,9 @@ export default function VideoCard({ video }: Props) {
           <CountStatus played={played} />
           <ToggleSwitch checked={muted} label="Mute" onChange={setMuted} />
         </div>
-        <Progress progress={played} className="transition-all" />
+        <Progress progress={played} className="z-50 w-full" />
       </div>
-      <h5 className="text-wrap text-sm font-bold tracking-tight text-gray-900 dark:text-white">
+      <h5 className="text-wrap text-left text-sm font-bold tracking-tight text-gray-900 dark:text-white">
         {video.title}
       </h5>
     </Card>

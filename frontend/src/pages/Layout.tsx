@@ -10,8 +10,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isAuthenticated && user && user.role === "admin") {
       navigate("/dashboard");
-    } else {
-      navigate("/");
     }
   }, [isAuthenticated, user, navigate]);
 

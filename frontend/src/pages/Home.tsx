@@ -1,16 +1,13 @@
-import { useQuery } from "@apollo/client";
 import VideoCard from "../components/VideoCard";
-import { GET_VIDEOS } from "../lib/query";
+import { useVideos } from "../hooks/useVideos";
 import { Video } from "../types";
 
 export default function Home() {
-  const { data, loading, error } = useQuery(GET_VIDEOS);
-  const videos = data?.videos;
+  const { videos, loading, error } = useVideos();
 
-  console.log(videos);
   return (
     <section>
-      <div>
+      <div className="container mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {loading ? (
           <div>Loading...</div>
         ) : error ? (

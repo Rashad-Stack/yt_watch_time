@@ -3,16 +3,21 @@ import { createContext, useEffect, useReducer } from "react";
 import { GET_SESSION } from "../lib/query";
 import { ActionType } from "../types";
 
-type State = {
-  user: User | null;
-  isAuthenticated: boolean;
-};
-
 type User = {
   id: string;
   email: string;
   watchPoint: number;
   role: string;
+};
+
+type State = {
+  user: User | null;
+  isAuthenticated: boolean;
+};
+
+export type AuthAction = {
+  type: ActionType;
+  payload?: User;
 };
 
 type Context = {
@@ -23,12 +28,7 @@ type Context = {
   clearUser: () => void;
 };
 
-type Action = {
-  type: ActionType;
-  payload?: User;
-};
-
-function authReducer(state: State, action: Action): State {
+function authReducer(state: State, action: AuthAction): State {
   switch (action.type) {
     case ActionType.LOGIN:
       return { ...state, isAuthenticated: true, user: action.payload || null };
@@ -53,40 +53,37 @@ export const AuthContext = createContext<Context | undefined>(undefined);
 export default function AuthProvider({ children }: Props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const { data, refetch, loading, error } = useQuery(GET_SESSION);
-
-  console.log(error);
+  const { data, refetch, loading, error } = useQuery(GET_SESSION, {
+    fetchPolicy: "no-cache",
+  });
 
   function setUser() {
     refetch();
-    dispatch({ type: ActionType.LOGIN, payload: { ...data?.session } });
+    dispatch({
+      type: ActionType.LOGIN,
+      payload: { ...data?.session },
+    });
   }
 
   function clearUser() {
-    refetch();
     dispatch({ type: ActionType.LOGOUT });
   }
 
   useEffect(() => {
-    function setCurrentUser() {
-      if (data) {
-        return dispatch({
-          type: ActionType.LOGIN,
-          payload: { ...data?.session },
-        });
-      }
-
-      if (error) {
-        return dispatch({ type: ActionType.LOGOUT });
-      }
-
-      dispatch({ type: ActionType.LOGOUT });
+    if (data) {
+      return dispatch({
+        type: ActionType.LOGIN,
+        payload: { ...data?.session },
+      });
     }
-    setCurrentUser();
+
+    if (error) {
+      return dispatch({ type: ActionType.LOGOUT });
+    }
   }, [data, error]);
 
   return (
-    <AuthContext.Provider value={{ ...state, setUser, clearUser, loading }}>
+    <AuthContext.Provider value={{ ...state, loading, clearUser, setUser }}>
       {children}
     </AuthContext.Provider>
   );

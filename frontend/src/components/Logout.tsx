@@ -5,15 +5,14 @@ import { useAuth } from "../hooks/useAuth";
 import { LOGOUT } from "../lib/query";
 
 export default function Logout() {
-  const { clearUser } = useAuth();
   const [logout, { loading }] = useMutation(LOGOUT);
+  const { clearUser } = useAuth();
 
   const handleLogout = () => {
     toast.promise(logout(), {
       loading: "Logging out...",
       success: ({ data }) => {
         clearUser();
-
         return data.logout;
       },
       error: (error) => error.message,
