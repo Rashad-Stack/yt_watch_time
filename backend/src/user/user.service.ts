@@ -4,18 +4,18 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+
+import { InjectModel } from "@nestjs/mongoose";
 import * as bcrypt from "bcryptjs";
-import { ObjectId as MongoId } from "mongodb";
-import { ObjectId, Repository } from "typeorm";
+import { Model, ObjectId } from "mongoose";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
-import { User } from "./entities/user.entity";
+import { User } from "./schema/user.schema";
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
   private hashPassword(password: string) {
@@ -26,11 +26,10 @@ export class UserService {
   async create(createUserInput: CreateUserInput) {
     try {
       // Create a new instance of the User entity and set its properties
-      const newUser = new User(createUserInput);
 
-      await this.userRepository.save({
-        ...newUser,
-        password: this.hashPassword(newUser.password),
+      await this.userModel.create({
+        ...createUserInput,
+        password: this.hashPassword(createUserInput.password),
       });
 
       return "User created successfully!";
@@ -47,7 +46,7 @@ export class UserService {
 
   async findAll() {
     try {
-      return await this.userRepository.find();
+      return await this.userModel.find();
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -55,8 +54,8 @@ export class UserService {
 
   async findOne(userId: ObjectId) {
     try {
-      const user = await this.userRepository.findOneBy({
-        _id: new MongoId(userId),
+      const user = await this.userModel.findOne({
+        _id: userId,
       });
       if (!user) {
         throw new NotFoundException("user does not exist!", {
@@ -70,7 +69,7 @@ export class UserService {
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+    return `This action updates a #${id} user: ${updateUserInput.email}`;
   }
 
   remove(id: number) {

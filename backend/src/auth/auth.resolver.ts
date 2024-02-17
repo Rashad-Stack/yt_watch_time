@@ -1,7 +1,7 @@
 import { UnauthorizedException } from "@nestjs/common";
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Request, Response } from "express";
-import { User } from "src/user/entities/user.entity";
+import { User } from "src/user/schema/user.schema";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 import { LoginInput } from "./dto/login.input";
@@ -19,6 +19,7 @@ export class AuthResolver {
     @Context() { res }: { res: Response },
   ) {
     const token = await this.authService.create(loginInput);
+
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365,

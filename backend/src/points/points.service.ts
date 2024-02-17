@@ -1,30 +1,29 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "src/user/entities/user.entity";
-import { ObjectId, Repository } from "typeorm";
 import { CreatePointInput } from "./dto/create-point.input";
 import { UpdatePointInput } from "./dto/update-point.input";
-import { Point } from "./entities/point.entity";
+
+import { InjectModel } from "@nestjs/mongoose";
+import { Model, ObjectId } from "mongoose";
+import { User } from "src/user/schema/user.schema";
+import { Point } from "./schema/points.schema";
 
 @Injectable()
 export class PointsService {
   constructor(
-    @InjectRepository(Point)
-    private readonly pointRepository: Repository<Point>,
+    @InjectModel(Point.name)
+    private readonly pointRepository: Model<Point>,
   ) {}
   async create(user: User, createPointInput: CreatePointInput) {
     try {
-      const newPoint = new Point(createPointInput);
-      await this.pointRepository.save({ ...newPoint, user: user });
+      await this.pointRepository.create({ ...createPointInput, user: user });
       return "Request send successfully!";
     } catch (error) {
       throw new InternalServerErrorException();
     }
-    return "This action adds a new point";
   }
 
   findAll() {
-    return `This action returns all points`;
+    return "This action returns all points";
   }
 
   findOne(id: number) {
@@ -32,7 +31,7 @@ export class PointsService {
   }
 
   update(id: ObjectId, updatePointInput: UpdatePointInput) {
-    return `This action updates a #${id} point`;
+    return `This action updates a #${id} point with ${updatePointInput}`;
   }
 
   remove(id: number) {

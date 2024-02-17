@@ -1,6 +1,6 @@
 import { Field, InputType, PartialType } from "@nestjs/graphql";
 import { IsNotEmpty, IsNumber, Min } from "class-validator";
-import { ObjectId } from "typeorm";
+import { ObjectId } from "mongoose";
 import { CreatePointInput } from "./create-point.input";
 
 @InputType()

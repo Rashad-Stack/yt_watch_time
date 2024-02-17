@@ -4,8 +4,8 @@ import { AuthResolver } from "src/auth/auth.resolver";
 import { AuthService } from "src/auth/auth.service";
 import { CreatePointInput } from "./dto/create-point.input";
 import { UpdatePointInput } from "./dto/update-point.input";
-import { Point } from "./entities/point.entity";
 import { PointsService } from "./points.service";
+import { Point } from "./schema/points.schema";
 
 @Resolver(() => Point)
 export class PointsResolver {

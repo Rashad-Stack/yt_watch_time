@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { Video } from "../entities/video.entity";
+import { Video } from "../schema/video.schema";
 
 @ObjectType("videos")
 export class PaginateVideo {

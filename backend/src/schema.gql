@@ -28,7 +28,7 @@ input LoginInput {
 type Mutation {
   createPoint(createPointInput: CreatePointInput!): String!
   createUser(createUserInput: CreateUserInput!): String!
-  createVideo(createVideoInput: CreateVideoInput!): String!
+  createVideo(createVideoInput: CreateVideoInput!): Video!
   login(loginInput: LoginInput!): String!
   logout: String!
   removePoint(id: Int!): Point!
@@ -50,12 +50,12 @@ type Point {
 }
 
 type Query {
+  allVideos(limit: Float! = 4): videos!
   point(id: Int!): Point!
   session: User!
   user(id: String!): User!
   users: [User!]!
   video(id: String!): Video!
-  videos: [Video!]!
 }
 
 input UpdatePointInput {
@@ -93,4 +93,9 @@ type Video {
   title: String!
   url: String!
   user: User!
+}
+
+type videos {
+  totalVideos: Int!
+  videos: [Video!]!
 }

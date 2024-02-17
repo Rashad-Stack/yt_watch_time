@@ -7,7 +7,7 @@ import {
   MaxLength,
   MinLength,
 } from "class-validator";
-import { ObjectId } from "typeorm";
+import { ObjectId } from "mongoose";
 import { CreateVideoInput } from "./create-video.input";
 
 @InputType()

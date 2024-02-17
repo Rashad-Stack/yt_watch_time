@@ -1,23 +1,22 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { ObjectId } from "mongodb";
-import { User } from "src/user/entities/user.entity";
-import { Repository } from "typeorm";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model, ObjectId } from "mongoose";
+import { User } from "src/user/schema/user.schema";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
 import { PaginateVideo } from "./dto/videos.dto";
-import { Video } from "./entities/video.entity";
+import { Video } from "./schema/video.schema";
 
 @Injectable()
 export class VideoService {
   constructor(
-    @InjectRepository(Video)
-    private readonly videoRepository: Repository<Video>,
+    @InjectModel(Video.name)
+    private readonly videoModel: Model<Video>,
   ) {}
 
   async create(user: User, createVideoInput: CreateVideoInput) {
     try {
-      const video = await this.videoRepository.save({
+      const video = await this.videoModel.create({
         ...createVideoInput,
         user: user,
       });
@@ -29,25 +28,21 @@ export class VideoService {
 
   async findAll(limit: number): Promise<PaginateVideo> {
     try {
-      const [videos, totalVideos] = await this.videoRepository.findAndCount({
-        relations: ["user"],
-        take: limit,
-        order: { createdAt: "DESC" },
-      });
+      const videos = await this.videoModel.find().populate("user").exec();
 
       return {
         videos,
-        totalVideos,
+        totalVideos: limit,
       };
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
   async findOne(id: ObjectId): Promise<Video> {
     try {
-      const video = await this.videoRepository.findOne({
-        where: { _id: new ObjectId(id) },
+      const video = await this.videoModel.findOne({
+        where: { _id: id },
         relations: ["user"],
       });
 

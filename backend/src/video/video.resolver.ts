@@ -1,12 +1,12 @@
 import { BadRequestException } from "@nestjs/common";
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Request } from "express";
+import { ObjectId } from "mongoose";
 import { AuthResolver } from "src/auth/auth.resolver";
-import { ObjectId } from "typeorm";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
 import { PaginateVideo } from "./dto/videos.dto";
-import { Video } from "./entities/video.entity";
+import { Video } from "./schema/video.schema";
 import { VideoService } from "./video.service";
 
 @Resolver(() => Video)
