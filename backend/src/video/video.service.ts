@@ -46,7 +46,7 @@ export class VideoService {
           },
         },
         {
-          $sort: { createdAt: -1 },
+          $sort: { "user.watchPoint": -1 },
         },
         {
           $limit: limit,
