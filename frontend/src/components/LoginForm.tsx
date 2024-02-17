@@ -41,7 +41,10 @@ export default function Login() {
     toast.promise(
       login({
         variables: {
-          loginInput: data,
+          loginInput: {
+            email: data.email,
+            password: data.password,
+          },
         },
       }),
       {
