@@ -28,7 +28,7 @@ export class VideoService {
 
   async findAll(limit: number): Promise<PaginateVideo> {
     try {
-      const videos = await this.videoModel.aggregate([
+      const promise = this.videoModel.aggregate([
         {
           $lookup: {
             from: "users", // name of the users collection
@@ -36,6 +36,9 @@ export class VideoService {
             foreignField: "_id",
             as: "user",
           },
+        },
+        {
+          $unwind: "$user", // Unwind user array
         },
         {
           $match: {
@@ -50,9 +53,12 @@ export class VideoService {
         },
       ]);
 
+      const videos = await promise.exec();
+      const totalVideos = (await promise.exec()).length;
+
       return {
         videos,
-        totalVideos: limit,
+        totalVideos: totalVideos,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
