@@ -24,7 +24,6 @@ export default function Home() {
       <InfiniteScroll
         dataLength={totalVideos || 0}
         next={() => {
-          console.log("fetching more");
           setPage(page + 1);
           fetchMore({ variables: { page: page + 1 } }).then((res) => {
             setVideos([...videos, ...res.data.allVideos.videos]);
