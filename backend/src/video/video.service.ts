@@ -26,39 +26,39 @@ export class VideoService {
     }
   }
 
-  async findAll(limit: number): Promise<PaginateVideo> {
+  async findAll(limit: number, page: number): Promise<PaginateVideo> {
     try {
-      const promise = this.videoModel.aggregate([
-        {
-          $lookup: {
-            from: "users", // name of the users collection
-            localField: "user",
-            foreignField: "_id",
-            as: "user",
+      const promise = this.videoModel
+        .aggregate([
+          {
+            $lookup: {
+              from: "users", // name of the users collection
+              localField: "user",
+              foreignField: "_id",
+              as: "user",
+            },
           },
-        },
-        {
-          $unwind: "$user", // Unwind user array
-        },
-        {
-          $match: {
-            "user.watchPoint": { $gt: 0 },
+          {
+            $unwind: "$user", // Unwind user array
           },
-        },
-        {
-          $sort: { "user.watchPoint": -1 },
-        },
-        {
-          $limit: limit,
-        },
-      ]);
+          {
+            $match: {
+              "user.watchPoint": { $gt: 0 },
+            },
+          },
+          {
+            $sort: { "user.watchPoint": -1 },
+          },
+        ])
+        .skip(limit * (page - 1))
+        .limit(limit);
 
       const videos = await promise.exec();
-      const totalVideos = (await promise.exec()).length;
+      const totalVideos = await this.videoModel.countDocuments();
 
       return {
         videos,
-        totalVideos: totalVideos,
+        totalVideos,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);

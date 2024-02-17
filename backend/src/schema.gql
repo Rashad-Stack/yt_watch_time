@@ -50,7 +50,7 @@ type Point {
 }
 
 type Query {
-  allVideos(limit: Float! = 12): videos!
+  allVideos(limit: Float! = 12, page: Float! = 1): videos!
   point(id: Int!): Point!
   session: User!
   user(id: String!): User!

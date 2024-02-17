@@ -8,37 +8,46 @@ import { GET_VIDEOS } from "../lib/query";
 import { Video } from "../types";
 
 export default function Home() {
-  const [limit, setLimit] = useState(12);
+  const [page, setPage] = useState(1);
+  const [videos, setVideos] = useState<Video[]>([]);
 
-  const { data } = useQuery(GET_VIDEOS, {
-    variables: {
-      limit,
+  const { data, fetchMore } = useQuery(GET_VIDEOS, {
+    onCompleted: (data) => {
+      setVideos(data?.allVideos?.videos || []);
     },
   });
 
-  const { videos, totalVideos } = data?.allVideos || {};
+  const { totalVideos } = data?.allVideos || {};
 
   return (
     <section>
       <InfiniteScroll
-        dataLength={videos?.length || 12}
-        next={() => setLimit(limit + 12)}
-        hasMore={videos?.length < totalVideos}
+        dataLength={totalVideos || 0}
+        next={() => {
+          console.log("fetching more");
+          setPage(page + 1);
+          fetchMore({ variables: { page: page + 1 } }).then((res) => {
+            setVideos([...videos, ...res.data.allVideos.videos]);
+          });
+        }}
+        hasMore={totalVideos === videos.length ? false : true}
         loader={
-          <div className="container mx-auto mt-4 grid max-w-7xl grid-cols-1 gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            <LoadingSkeleton count={4}>
+          <div className="container mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <LoadingSkeleton count={8}>
               <VideoCardSkeleton />
             </LoadingSkeleton>
           </div>
         }
       >
-        <div className="container mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {videos &&
-            videos.length > 0 &&
-            videos.map((video: Video) => (
-              <VideoCard key={video._id} video={video} />
-            ))}
-        </div>
+        {
+          <div className="container mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {videos &&
+              videos.length > 0 &&
+              videos.map((video: Video) => (
+                <VideoCard key={video._id} video={video} />
+              ))}
+          </div>
+        }
       </InfiniteScroll>
     </section>
   );

@@ -23,8 +23,8 @@ export const GET_SESSION = gql`
 `;
 
 export const GET_VIDEOS = gql`
-  query GetAllVideos($limit: Float) {
-    allVideos(limit: $limit) {
+  query GetAllVideos($limit: Float, $page: Float) {
+    allVideos(limit: $limit, page: $page) {
       totalVideos
       videos {
         _id

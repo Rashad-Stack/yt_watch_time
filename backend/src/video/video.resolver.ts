@@ -34,8 +34,9 @@ export class VideoResolver {
   @Query(() => PaginateVideo, { name: "allVideos" })
   async findAll(
     @Args("limit", { defaultValue: 12 }) limit: number,
+    @Args("page", { defaultValue: 1 }) page: number,
   ): Promise<PaginateVideo> {
-    return this.videoService.findAll(limit);
+    return this.videoService.findAll(limit, page);
   }
 
   @Query(() => Video, { name: "video" })
