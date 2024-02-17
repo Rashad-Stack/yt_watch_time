@@ -8,7 +8,7 @@ import { GET_VIDEOS } from "../lib/query";
 import { Video } from "../types";
 
 export default function Home() {
-  const [limit, setLimit] = useState(4);
+  const [limit, setLimit] = useState(12);
 
   const { data } = useQuery(GET_VIDEOS, {
     variables: {
@@ -21,8 +21,8 @@ export default function Home() {
   return (
     <section>
       <InfiniteScroll
-        dataLength={videos?.length || 4}
-        next={() => setLimit(limit + 4)}
+        dataLength={videos?.length || 12}
+        next={() => setLimit(limit + 12)}
         hasMore={videos?.length < totalVideos}
         loader={
           <div className="container mx-auto mt-4 grid max-w-7xl grid-cols-1 gap-4 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

@@ -28,6 +28,8 @@ export default function BuyPointForm() {
     data.points = Math.abs(data.price * 10);
     data.phone = data.phone.includes("+88") ? data.phone : `+88${data.phone}`;
 
+    console.log(data);
+
     toast.promise(
       buyPoints({
         variables: {
@@ -62,11 +64,6 @@ export default function BuyPointForm() {
           <Controller
             name="price"
             control={control}
-            rules={{
-              validate: (value) =>
-                value < 1 || "Can not buy less than 10 points!",
-              min: 1,
-            }}
             render={({ field }) => {
               const { onChange, value } = field;
               return (
