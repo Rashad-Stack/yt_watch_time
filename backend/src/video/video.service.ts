@@ -28,7 +28,27 @@ export class VideoService {
 
   async findAll(limit: number): Promise<PaginateVideo> {
     try {
-      const videos = await this.videoModel.find().populate("user").exec();
+      const videos = await this.videoModel.aggregate([
+        {
+          $lookup: {
+            from: "users", // name of the users collection
+            localField: "user",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        {
+          $match: {
+            "user.watchPoint": { $gt: 0 },
+          },
+        },
+        {
+          $sort: { createdAt: -1 },
+        },
+        {
+          $limit: limit,
+        },
+      ]);
 
       return {
         videos,
