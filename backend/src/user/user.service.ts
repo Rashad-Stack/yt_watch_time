@@ -6,7 +6,6 @@ import {
 } from "@nestjs/common";
 
 import { InjectModel } from "@nestjs/mongoose";
-import * as bcrypt from "bcryptjs";
 import { Model, ObjectId } from "mongoose";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
@@ -18,19 +17,11 @@ export class UserService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  private hashPassword(password: string) {
-    const salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(password, salt);
-  }
-
   async create(createUserInput: CreateUserInput) {
     try {
       // Create a new instance of the User entity and set its properties
 
-      await this.userModel.create({
-        ...createUserInput,
-        password: this.hashPassword(createUserInput.password),
-      });
+      await this.userModel.create(createUserInput);
 
       return "User created successfully!";
     } catch (error) {
