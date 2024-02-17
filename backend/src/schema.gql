@@ -22,7 +22,6 @@ input CreateVideoInput {
 input LoginInput {
   email: String!
   password: String!
-  remember: Boolean!
 }
 
 type Mutation {

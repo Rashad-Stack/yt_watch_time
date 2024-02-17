@@ -1,7 +1,8 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
-import { Model } from "mongoose";
+import { Model, ObjectId } from "mongoose";
 import { User } from "src/user/schema/user.schema";
 import { LoginInput } from "./dto/login.input";
 
@@ -15,21 +16,39 @@ export class AuthService {
     return jwt.verify(token, process.env.JWT_SECRET) as jwt.JwtPayload;
   };
 
+  private readonly createAuthToken = function (
+    id: ObjectId,
+    role: string,
+  ): string {
+    return jwt.sign({ id, role }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+  };
+
+  private readonly comparePassword = async function (
+    candidatePassword: string,
+    databasePassword: string,
+  ) {
+    return await bcrypt.compare(candidatePassword, databasePassword);
+  };
+
   async create(LoginInput: LoginInput) {
     try {
-      const user = await this.userModel.findOne({
-        where: { email: LoginInput.email },
-      });
+      const user = await this.userModel.findOne({ email: LoginInput.email });
+
       if (!user) {
         throw new UnauthorizedException("Invalid credentials!");
       }
+      const passwordMatches = await this.comparePassword(
+        LoginInput.password,
+        user.password,
+      );
 
-      const passwordMatches = await user.comparePassword(LoginInput.password);
       if (!passwordMatches) {
         throw new UnauthorizedException("Invalid credentials!");
       }
 
-      return user.createAuthToken();
+      return this.createAuthToken(user._id, user.role);
     } catch (error) {
       throw new UnauthorizedException("Invalid credentials!");
     }
