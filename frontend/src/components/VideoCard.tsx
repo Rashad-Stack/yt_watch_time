@@ -12,6 +12,8 @@ export default function VideoCard({ video }: Props) {
   const [played, setPlayed] = useState<number>(0);
   const [muted, setMuted] = useState<boolean>(true);
 
+  // console.log(video?.user?._id);
+
   return (
     <Card
       className="overflow-hidden rounded-lg bg-white text-neutral-900 shadow-lg transition-all hover:shadow-xl dark:bg-neutral-800 dark:text-neutral-200"

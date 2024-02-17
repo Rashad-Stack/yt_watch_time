@@ -59,8 +59,25 @@ export class UserService {
     }
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user: ${updateUserInput.email}`;
+  async updatePoint(loggedUserId: ObjectId, hostUserId: ObjectId) {
+    try {
+      await this.userModel.findOneAndUpdate(
+        { _id: hostUserId, watchPoint: { $gt: 0 } },
+        { $inc: { watchPoint: -1 } },
+      );
+
+      await this.userModel.findByIdAndUpdate(loggedUserId, {
+        $inc: { watchPoint: 1 },
+      });
+
+      return "User updated successfully!";
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  update(userId: ObjectId, updateUserInput: UpdateUserInput) {
+    return `This action updates a #${userId} user: ${updateUserInput.email}`;
   }
 
   remove(id: number) {

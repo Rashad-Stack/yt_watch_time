@@ -35,6 +35,7 @@ type Mutation {
   removeVideo(id: String!): Video!
   updatePoint(id: UpdatePointInput!): Point!
   updateUser(updateUserInput: UpdateUserInput!): User!
+  updateUserPoint(updateUserInput: UpdateUserInput!): String!
   updateVideo(updateVideoInput: UpdateVideoInput!): Video!
 }
 
@@ -66,9 +67,9 @@ input UpdatePointInput {
 }
 
 input UpdateUserInput {
+  _id: String!
   email: String
-  id: Float!
-  password: String!
+  password: String
 }
 
 input UpdateVideoInput {

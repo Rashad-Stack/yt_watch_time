@@ -30,6 +30,9 @@ export const GET_VIDEOS = gql`
         _id
         title
         url
+        user {
+          _id
+        }
       }
     }
   }

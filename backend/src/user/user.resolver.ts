@@ -1,5 +1,7 @@
-import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Context, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Request } from "express";
 import { ObjectId } from "mongoose";
+import { AuthResolver } from "src/auth/auth.resolver";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { User } from "./schema/user.schema";
@@ -7,7 +9,10 @@ import { UserService } from "./user.service";
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authResolver: AuthResolver,
+  ) {}
 
   @Mutation(() => String)
   createUser(@Args("createUserInput") createUserInput: CreateUserInput) {
@@ -25,8 +30,21 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  updateUser(@Args("updateUserInput") updateUserInput: UpdateUserInput) {
-    return this.userService.update(updateUserInput.id, updateUserInput);
+  async updateUser(
+    @Args("updateUserInput") updateUserInput: UpdateUserInput,
+    @Context() { req }: { req: Request },
+  ) {
+    await this.authResolver.session({ req });
+    return this.userService.update(updateUserInput._id, updateUserInput);
+  }
+
+  @Mutation(() => String)
+  async updateUserPoint(
+    @Args("updateUserInput") updateUserInput: UpdateUserInput,
+    @Context() { req }: { req: Request },
+  ) {
+    const user = await this.authResolver.session({ req });
+    return this.userService.updatePoint(user._id, updateUserInput._id);
   }
 
   @Mutation(() => User)
