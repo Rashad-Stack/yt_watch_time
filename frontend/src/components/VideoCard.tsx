@@ -1,6 +1,11 @@
+import { useMutation, useQuery } from "@apollo/client";
 import { Card, Progress, ToggleSwitch } from "flowbite-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import ReactPlayer from "react-player";
+import { useAuth } from "../hooks/useAuth";
+import { handleError } from "../lib/handleError";
+import { GET_SESSION, UPDATE_USER_POINT } from "../lib/query";
 import { Video } from "../types";
 import CountStatus from "./CountStatus";
 
@@ -11,8 +16,30 @@ type Props = {
 export default function VideoCard({ video }: Props) {
   const [played, setPlayed] = useState<number>(0);
   const [muted, setMuted] = useState<boolean>(true);
+  const { refetch } = useQuery(GET_SESSION);
+  const [updatePoints] = useMutation(UPDATE_USER_POINT, {
+    onCompleted: () => refetch(),
+  });
+  const { clearUser } = useAuth();
 
-  // console.log(video?.user?._id);
+  const handleUpdatePoints = (played: number) => {
+    if (Math.floor(played) === 40) {
+      toast.promise(
+        updatePoints({
+          variables: {
+            updateUserInput: {
+              _id: video?.user?._id,
+            },
+          },
+        }),
+        {
+          loading: "Updating points...",
+          success: "Points added",
+          error: (error) => handleError(error, clearUser),
+        },
+      );
+    }
+  };
 
   return (
     <Card
@@ -23,7 +50,11 @@ export default function VideoCard({ video }: Props) {
             url={video.url}
             volume={1}
             muted={muted}
-            onProgress={(state) => setPlayed((state.playedSeconds * 100) / 40)}
+            onProgress={(state) => {
+              const progress = Math.floor(state.playedSeconds * 100) / 40;
+              setPlayed(progress);
+              handleUpdatePoints(state.playedSeconds);
+            }}
             style={{
               maxWidth: "370px",
               maxHeight: "200px",

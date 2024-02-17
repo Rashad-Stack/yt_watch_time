@@ -72,3 +72,9 @@ export const POST_VIDEO = gql`
     }
   }
 `;
+
+export const UPDATE_USER_POINT = gql`
+  mutation UpdateUserPoint($updateUserInput: UpdateUserInput!) {
+    updateUserPoint(updateUserInput: $updateUserInput)
+  }
+`;
