@@ -2,20 +2,22 @@ import { useMutation } from "@apollo/client";
 import { Button } from "flowbite-react";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
+import { handleError } from "../lib/handleError";
 import { LOGOUT } from "../lib/query";
 
 export default function Logout() {
-  const [logout, { loading }] = useMutation(LOGOUT);
   const { clearUser } = useAuth();
+  const [logout, { loading }] = useMutation(LOGOUT, {
+    onCompleted: () => clearUser(),
+  });
 
   const handleLogout = () => {
     toast.promise(logout(), {
       loading: "Logging out...",
       success: ({ data }) => {
-        clearUser();
         return data.logout;
       },
-      error: (error) => error.message,
+      error: (error) => handleError(error, clearUser),
     });
   };
 

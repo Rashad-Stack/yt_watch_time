@@ -11,7 +11,7 @@ export default function Header() {
 
   return (
     <>
-      <header>
+      <header className="sticky top-0">
         <Navbar fluid rounded>
           <Navbar.Brand>
             {loading ? (

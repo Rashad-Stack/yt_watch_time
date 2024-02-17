@@ -23,11 +23,13 @@ export class AuthResolver {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365,
     });
+
     return "Login successful!";
   }
 
   @Mutation(() => String)
-  async logout(@Context() { res }: { res: Response }) {
+  async logout(@Context() { req, res }: { res: Response; req: Request }) {
+    await this.session({ req });
     res.clearCookie("token");
     return "Logout successful!";
   }
@@ -52,9 +54,6 @@ export class AuthResolver {
 
     const user = await this.userService.findOne(payload.id);
 
-    return {
-      ...user,
-      password: undefined,
-    };
+    return user;
   }
 }

@@ -26,8 +26,10 @@ const initialState = {
 };
 
 export default function Login() {
-  const [login, { loading }] = useMutation(LOGIN);
   const { setUser } = useAuth();
+  const [login, { loading }] = useMutation(LOGIN, {
+    onCompleted: () => setUser(),
+  });
 
   const {
     register,
@@ -45,7 +47,6 @@ export default function Login() {
       {
         loading: "Logging in...",
         success: ({ data }) => {
-          setUser();
           const dialog = document.getElementById(
             "authForm",
           ) as HTMLDialogElement;

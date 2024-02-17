@@ -1,8 +1,7 @@
-import VideosProvider from "./VideosContext";
 import AuthProvider from "./authcontext";
 import combineProviders from "./combineComponents";
 
-const providers = [AuthProvider, VideosProvider];
+const providers = [AuthProvider];
 
 const AppContextProvider = combineProviders(providers);
 

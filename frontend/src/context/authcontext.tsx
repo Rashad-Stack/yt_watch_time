@@ -54,7 +54,7 @@ export default function AuthProvider({ children }: Props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   const { data, refetch, loading, error } = useQuery(GET_SESSION, {
-    fetchPolicy: "no-cache",
+    fetchPolicy: "network-only",
   });
 
   function setUser() {
