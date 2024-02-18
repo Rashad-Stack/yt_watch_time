@@ -33,7 +33,11 @@ export class PointsResolver {
     @Args("limit", { type: () => Int, defaultValue: 20 }) limit: number,
     @Args("search", { type: () => String, nullable: true })
     search: string,
-    @Args("filter", { type: () => Boolean, nullable: true })
+    @Args("filter", {
+      type: () => Boolean,
+      defaultValue: false,
+      nullable: true,
+    })
     filter: boolean,
     @Context() { req }: { req: Request },
   ): Promise<PaginatePoints> {

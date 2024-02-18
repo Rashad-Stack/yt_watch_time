@@ -36,6 +36,10 @@ export const handleError = (
           clearUser?.({ type: ActionType.LOGOUT });
           return "Session expired. Please login again.";
         }
+        if (err.message === "Invalid token!") {
+          clearUser?.({ type: ActionType.LOGOUT });
+          return "Session expired. Please login again.";
+        }
         return err.message;
       });
       return gqlError.join(" & ");

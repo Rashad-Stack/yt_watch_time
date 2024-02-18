@@ -11,11 +11,26 @@ export type Inputs = {
   remember: boolean;
 };
 
+export type User = {
+  _id: string;
+  email: string;
+  role: string;
+  watchPoint: number;
+};
+
 export type Video = {
   _id: string;
   title: string;
   url: string;
-  user: {
-    _id: string;
-  };
+  user: User;
+};
+
+export type Points = {
+  _id: string;
+  isApproved: boolean;
+  phone: string;
+  points: number;
+  price: number;
+  trxId: string;
+  user: User;
 };

@@ -38,6 +38,32 @@ export const GET_VIDEOS = gql`
   }
 `;
 
+export const GET_POINTS = gql`
+  query GetAllPoints(
+    $filter: Boolean
+    $limit: Int
+    $page: Int
+    $search: String
+  ) {
+    points(filter: $filter, limit: $limit, page: $page, search: $search) {
+      total
+      pages
+      points {
+        _id
+        isApproved
+        phone
+        points
+        price
+        trxId
+        user {
+          _id
+          email
+        }
+      }
+    }
+  }
+`;
+
 // MUTATIONS
 export const LOGIN = gql`
   mutation Login($loginInput: LoginInput!) {

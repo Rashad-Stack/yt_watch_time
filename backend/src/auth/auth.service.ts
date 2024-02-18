@@ -61,9 +61,12 @@ export class AuthService {
     try {
       return this.verify(token);
     } catch (error) {
-      throw new UnauthorizedException("Invalid token!", {
-        cause: new Error("Invalid token!"),
-      });
+      throw new UnauthorizedException(
+        "Your token has expired or invalid. Please log in and try again.",
+        {
+          cause: new Error("Invalid token!"),
+        },
+      );
     }
   }
 }
