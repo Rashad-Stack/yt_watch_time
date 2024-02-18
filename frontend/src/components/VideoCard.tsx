@@ -50,6 +50,7 @@ export default function VideoCard({ video }: Props) {
             url={video.url}
             volume={1}
             muted={muted}
+            light={true}
             onProgress={(state) => {
               const progress = Math.floor(state.playedSeconds * 100) / 40;
               setPlayed(progress);

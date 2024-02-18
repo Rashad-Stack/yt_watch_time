@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 // QUERIES
 export const GET_USERS = gql`
-  query {
+  query GetAllUsers {
     users {
       _id
       email
@@ -12,7 +12,7 @@ export const GET_USERS = gql`
 `;
 
 export const GET_SESSION = gql`
-  query {
+  query GetSession {
     session {
       _id
       email
@@ -46,7 +46,7 @@ export const LOGIN = gql`
 `;
 
 export const LOGOUT = gql`
-  mutation {
+  mutation Logout {
     logout
   }
 `;

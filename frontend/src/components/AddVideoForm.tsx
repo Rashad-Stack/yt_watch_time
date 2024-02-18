@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Button, Label, TextInput } from "flowbite-react";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -19,7 +19,6 @@ type Inputs = {
 
 export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
   const [addVideo, { loading }] = useMutation(POST_VIDEO);
-  const { refetch } = useQuery(GET_VIDEOS);
   const { clearUser } = useAuth();
 
   const {
@@ -38,13 +37,13 @@ export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
         variables: {
           createVideoInput: data,
         },
+        refetchQueries: [{ query: GET_VIDEOS }],
       }),
       {
         loading: "adding...",
         success: () => {
           reset();
           setVideoUrl("");
-          refetch();
           const dialog = document.getElementById(
             "addVideo",
           ) as HTMLDialogElement;

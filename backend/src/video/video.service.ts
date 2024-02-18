@@ -28,7 +28,7 @@ export class VideoService {
 
   async findAll(limit: number, page: number): Promise<PaginateVideo> {
     try {
-      const promise = this.videoModel
+      const videos = await this.videoModel
         .aggregate([
           {
             $lookup: {
@@ -50,11 +50,24 @@ export class VideoService {
             $sort: { "user.watchPoint": -1 },
           },
         ])
-        .skip(limit * (page - 1))
+        .skip((page - 1) * limit)
         .limit(limit);
 
-      const videos = await promise.exec();
-      const totalVideos = await this.videoModel.countDocuments();
+      const totalVideos = await this.videoModel.countDocuments([
+        {
+          $lookup: {
+            from: "users", // name of the users collection
+            localField: "user",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        {
+          $match: {
+            "user.watchPoint": { $gt: 0 },
+          },
+        },
+      ]);
 
       return {
         videos,
