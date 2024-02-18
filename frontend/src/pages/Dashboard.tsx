@@ -15,7 +15,7 @@ export default function Dashboard() {
 
   const { data, loading, error, refetch } = useQuery(GET_POINTS, {
     onCompleted: (data) => {
-      setAllPoints(data.points.points);
+      setAllPoints(data?.points?.points || []);
     },
     variables: {
       limit,
@@ -27,7 +27,7 @@ export default function Dashboard() {
     console.log("Approve");
   }
 
-  console.log(data.points.__typename);
+  console.log(data?.points.__typename);
 
   const { total, pages } = data?.points || {};
 

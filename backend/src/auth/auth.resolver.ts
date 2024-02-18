@@ -5,6 +5,7 @@ import { User } from "src/user/schema/user.schema";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 import { LoginInput } from "./dto/login.input";
+import { LoggedInUser } from "./dto/user.dto";
 
 @Resolver()
 export class AuthResolver {
@@ -13,20 +14,22 @@ export class AuthResolver {
     private readonly userService: UserService,
   ) {}
 
-  @Mutation(() => String)
+  @Mutation(() => LoggedInUser)
   async login(
     @Args("loginInput") loginInput: LoginInput,
     @Context() { res }: { res: Response },
-  ) {
-    const token = await this.authService.create(loginInput);
+  ): Promise<LoggedInUser> {
+    // Create a new user
+    const data = await this.authService.create(loginInput);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 1,
-      secure: process.env.NODE_ENV === "production",
-    });
+    // Send the token as a cookie
+    this.authService.sendTokenCookies(res, data.token);
 
-    return "Login successful!";
+    // Return the user and a message
+    return {
+      user: data.user,
+      message: "Login successful!",
+    };
   }
 
   @Mutation(() => String)

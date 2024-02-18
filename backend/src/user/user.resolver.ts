@@ -1,3 +1,4 @@
+import { UnauthorizedException } from "@nestjs/common";
 import { Args, Context, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Request } from "express";
 import { ObjectId } from "mongoose";
@@ -45,6 +46,21 @@ export class UserResolver {
   ) {
     const user = await this.authResolver.session({ req });
     return this.userService.updatePoint(user._id, updateUserInput._id);
+  }
+
+  @Mutation(() => User)
+  async updateWatchPoint(
+    @Args("userId", { type: () => String }) userId: ObjectId,
+    @Args("watchPoints", { type: () => Int }) watchPoints: number,
+    @Context() { req }: { req: Request },
+  ) {
+    const user = await this.authResolver.session({ req });
+    if (user.role !== "admin")
+      throw new UnauthorizedException(
+        "You are not authorized to perform this action!",
+      );
+
+    return this.userService.approveUpdatePoint(userId, watchPoints);
   }
 
   @Mutation(() => User)

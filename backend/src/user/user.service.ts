@@ -21,7 +21,9 @@ export class UserService {
     try {
       // Create a new instance of the User entity and set its properties
 
-      await this.userModel.create(createUserInput);
+      const user = new this.userModel(createUserInput);
+
+      await user.save();
 
       return "User created successfully!";
     } catch (error) {
@@ -37,7 +39,7 @@ export class UserService {
 
   async findAll() {
     try {
-      return await this.userModel.find();
+      return await this.userModel.find().populate("points");
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
@@ -71,6 +73,26 @@ export class UserService {
       });
 
       return "User updated successfully!";
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async approveUpdatePoint(userId: ObjectId, points: number) {
+    try {
+      const user = await this.userModel
+        .findByIdAndUpdate(
+          userId,
+          {
+            $inc: { watchPoint: points },
+          },
+          { new: true },
+        )
+        .populate("points");
+
+      console.log(user);
+
+      return user;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

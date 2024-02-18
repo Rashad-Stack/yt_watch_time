@@ -1,11 +1,11 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { Document, ObjectId } from "mongoose";
 import { User } from "src/user/schema/user.schema";
 
 @ObjectType()
 @Schema({ timestamps: true })
-export class Point {
+export class Point extends Document {
   @Field(() => String)
   _id: ObjectId;
 

@@ -1,8 +1,12 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import * as bcrypt from "bcryptjs";
+import { Response } from "express";
 import * as jwt from "jsonwebtoken";
-import { Model, ObjectId } from "mongoose";
+import { Model } from "mongoose";
 import { User } from "src/user/schema/user.schema";
 import { LoginInput } from "./dto/login.input";
 
@@ -12,28 +16,14 @@ export class AuthService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
+  // Verify the token
   private readonly verify = (token: string) => {
     return jwt.verify(token, process.env.JWT_SECRET) as jwt.JwtPayload;
   };
 
-  private readonly createAuthToken = function (
-    id: ObjectId,
-    role: string,
-  ): string {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
-  };
-
-  private readonly comparePassword = async function (
-    candidatePassword: string,
-    databasePassword: string,
-  ) {
-    return await bcrypt.compare(candidatePassword, databasePassword);
-  };
-
-  async create(LoginInput: LoginInput) {
+  async create(LoginInput: LoginInput): Promise<{ user: User; token: string }> {
     try {
+      // Find the user by email
       const user = await this.userModel.findOne(
         { email: LoginInput.email },
         "password",
@@ -42,21 +32,25 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException("Invalid credentials!");
       }
-      const passwordMatches = await this.comparePassword(
-        LoginInput.password,
-        user.password,
-      );
 
+      // Check if the password matches
+      const passwordMatches = await user.comparePassword(LoginInput.password);
       if (!passwordMatches) {
         throw new UnauthorizedException("Invalid credentials!");
       }
 
-      return this.createAuthToken(user._id, user.role);
+      // Create Authenticated User Token
+      const token = user.createAuthToken();
+
+      // Return the token and the user
+      return { user, token };
     } catch (error) {
-      throw new UnauthorizedException("Invalid credentials!");
+      console.log(error);
+      throw new InternalServerErrorException(error);
     }
   }
 
+  // Verify the token
   verifyToken(token: string): jwt.JwtPayload {
     try {
       return this.verify(token);
@@ -68,5 +62,14 @@ export class AuthService {
         },
       );
     }
+  }
+
+  // Send the token as a cookie
+  sendTokenCookies(res: Response, token: string) {
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 1,
+      secure: process.env.NODE_ENV === "production",
+    });
   }
 }
