@@ -3,7 +3,7 @@ import { Button, Label, TextInput } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { handleError } from "../lib/handleError";
-import { REGISTER } from "../lib/query";
+import { GET_SESSION, REGISTER } from "../lib/query";
 
 type Inputs = {
   email: string;
@@ -30,17 +30,18 @@ export default function Register() {
             password: data.password,
           },
         },
-      }),
-      {
-        loading: "Registering...",
-        success: ({ data }) => {
+        refetchQueries: [{ query: GET_SESSION }],
+        onQueryUpdated: () => {
           const dialog = document.getElementById(
             "authForm",
           ) as HTMLDialogElement;
           dialog.close();
           reset();
-          return data.createUser;
         },
+      }),
+      {
+        loading: "Registering...",
+        success: ({ data }) => data.createUser,
         error: (error) => handleError(error),
       },
     );

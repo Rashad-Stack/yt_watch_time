@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
 import { handleError } from "../lib/handleError";
-import { LOGIN } from "../lib/query";
+import { GET_SESSION, LOGIN } from "../lib/query";
 
 type Inputs = {
   email: string;
@@ -46,16 +46,17 @@ export default function Login() {
             password: data.password,
           },
         },
-      }),
-      {
-        loading: "Logging in...",
-        success: ({ data }) => {
+        refetchQueries: [{ query: GET_SESSION }],
+        onQueryUpdated: () => {
           const dialog = document.getElementById(
             "authForm",
           ) as HTMLDialogElement;
           dialog.close();
-          return data.login;
         },
+      }),
+      {
+        loading: "Logging in...",
+        success: ({ data }) => data.login,
         error: (error) => handleError(error),
       },
     );

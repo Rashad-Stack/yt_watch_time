@@ -35,17 +35,17 @@ export default function BuyPointForm() {
         variables: {
           createPointInput: data,
         },
-      }),
-      {
-        loading: "Sending...",
-        success: ({ data }) => {
+        onQueryUpdated: () => {
           const dialog = document.getElementById(
             "buyPoint",
           ) as HTMLDialogElement;
           dialog.close();
           reset();
-          return data.createPoint;
         },
+      }),
+      {
+        loading: "Sending...",
+        success: ({ data }) => data.createPoint,
         error: (error) => handleError(error),
       },
     );

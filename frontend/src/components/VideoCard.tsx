@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Card, Progress, ToggleSwitch } from "flowbite-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -16,10 +16,7 @@ type Props = {
 export default function VideoCard({ video }: Props) {
   const [played, setPlayed] = useState<number>(0);
   const [muted, setMuted] = useState<boolean>(true);
-  const { refetch } = useQuery(GET_SESSION);
-  const [updatePoints] = useMutation(UPDATE_USER_POINT, {
-    onCompleted: () => refetch(),
-  });
+  const [updatePoints] = useMutation(UPDATE_USER_POINT);
   const { clearUser } = useAuth();
 
   const handleUpdatePoints = (played: number) => {
@@ -31,6 +28,7 @@ export default function VideoCard({ video }: Props) {
               _id: video?.user?._id,
             },
           },
+          refetchQueries: [{ query: GET_SESSION }],
         }),
         {
           loading: "Updating points...",

@@ -38,16 +38,18 @@ export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
           createVideoInput: data,
         },
         refetchQueries: [{ query: GET_VIDEOS }],
-      }),
-      {
-        loading: "adding...",
-        success: () => {
+        onQueryUpdated: () => {
           reset();
           setVideoUrl("");
           const dialog = document.getElementById(
             "addVideo",
           ) as HTMLDialogElement;
           dialog.close();
+        },
+      }),
+      {
+        loading: "adding...",
+        success: () => {
           return "Video added successfully";
         },
         error: (error) => handleError(error, clearUser),
