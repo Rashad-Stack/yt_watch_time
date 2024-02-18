@@ -51,7 +51,8 @@ type Point {
 
 type Query {
   allVideos(limit: Float! = 12, page: Float! = 1): videos!
-  point(id: Int!): Point!
+  point(id: String!): Point!
+  points(filter: Boolean, limit: Int! = 20, page: Int! = 1, search: String): points!
   session: User!
   user(id: String!): User!
   users: [User!]!
@@ -93,6 +94,12 @@ type Video {
   title: String!
   url: String!
   user: User!
+}
+
+type points {
+  pages: Int!
+  points: [Point!]!
+  total: Int!
 }
 
 type videos {
