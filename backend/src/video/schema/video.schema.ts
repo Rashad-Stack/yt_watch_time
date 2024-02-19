@@ -22,4 +22,16 @@ export class Video {
   user: Types.ObjectId | User;
 }
 
+export type VideoDocument = Video & Document;
+
 export const VideoSchema = SchemaFactory.createForClass(Video);
+
+// Populate the user field when finding a video
+const populateUser = function (next) {
+  this.populate("user");
+  next();
+};
+
+// Populate the user field when finding a video
+VideoSchema.pre("find", populateUser);
+VideoSchema.pre("findOne", populateUser);

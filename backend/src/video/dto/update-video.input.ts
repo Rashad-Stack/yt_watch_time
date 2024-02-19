@@ -7,14 +7,14 @@ import {
   MaxLength,
   MinLength,
 } from "class-validator";
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
 import { CreateVideoInput } from "./create-video.input";
 
 @InputType()
 export class UpdateVideoInput extends PartialType(CreateVideoInput) {
   @Field(() => String, { name: "id" })
   @IsNotEmpty()
-  id: ObjectId;
+  id: Types.ObjectId;
 
   @Field()
   @Optional()

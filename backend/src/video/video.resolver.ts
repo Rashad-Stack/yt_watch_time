@@ -1,6 +1,6 @@
 import { BadRequestException, UseGuards } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
 import { AuthGuard } from "src/auth/auth.guard";
 import { AuthResolver } from "src/auth/auth.resolver";
 import { CurrentUser } from "src/auth/current.user.decorator";
@@ -23,7 +23,7 @@ export class VideoResolver {
   async createVideo(
     @Args("createVideoInput") createVideoInput: CreateVideoInput,
     @CurrentUser() user: User,
-  ): Promise<Video> {
+  ): Promise<{ video: Video; message: string }> {
     const urls = ["youtu.be", "youtube"];
     const isYoutubeUrl = urls.some((url) => createVideoInput.url.includes(url));
 
@@ -31,7 +31,12 @@ export class VideoResolver {
       throw new BadRequestException("Invalid Youtube video URL");
     }
 
-    return this.videoService.create(user, createVideoInput);
+    const video = await this.videoService.create(user, createVideoInput);
+
+    return {
+      video,
+      message: "Video created successfully",
+    };
   }
 
   @Query(() => PaginateVideo, { name: "allVideos" })
@@ -44,7 +49,7 @@ export class VideoResolver {
 
   @Query(() => Video, { name: "video" })
   async findOne(
-    @Args("id", { type: () => String }) id: ObjectId,
+    @Args("id", { type: () => String }) id: Types.ObjectId,
   ): Promise<Video> {
     return await this.videoService.findOne(id);
   }
@@ -55,7 +60,7 @@ export class VideoResolver {
   }
 
   @Mutation(() => Video)
-  removeVideo(@Args("id", { type: () => String }) id: ObjectId) {
+  removeVideo(@Args("id", { type: () => String }) id: Types.ObjectId) {
     return this.videoService.remove(id);
   }
 }
