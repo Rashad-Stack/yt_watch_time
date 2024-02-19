@@ -41,7 +41,7 @@ export default function Register() {
       }),
       {
         loading: "Registering...",
-        success: ({ data }) => data.createUser,
+        success: ({ data }) => data.createUser.message,
         error: (error) => handleError(error),
       },
     );

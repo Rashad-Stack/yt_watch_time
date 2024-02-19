@@ -17,7 +17,7 @@ export class UserService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async create(createUserInput: CreateUserInput) {
+  async create(createUserInput: CreateUserInput): Promise<User> {
     try {
       // Create a new instance of the User entity and set its properties
       const user = new this.userModel(createUserInput);

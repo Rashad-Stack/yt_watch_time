@@ -18,7 +18,6 @@ import { Video } from "src/video/schema/video.schema";
     },
 
     createAuthToken(this: UserDocument): string {
-      console.log(this);
       return jwt.sign(
         { id: this._id, role: this.role },
         process.env.JWT_SECRET,

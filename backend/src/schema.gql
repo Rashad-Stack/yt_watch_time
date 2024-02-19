@@ -31,7 +31,7 @@ input LoginInput {
 
 type Mutation {
   createPoint(createPointInput: CreatePointInput!): String!
-  createUser(createUserInput: CreateUserInput!): String!
+  createUser(createUserInput: CreateUserInput!): Signup!
   createVideo(createVideoInput: CreateVideoInput!): Video!
   login(loginInput: LoginInput!): LoggedInUser!
   logout: String!
@@ -63,6 +63,11 @@ type Query {
   user(id: String!): User!
   users: [User!]!
   video(id: String!): Video!
+}
+
+type Signup {
+  message: String!
+  user: User!
 }
 
 input UpdatePointInput {

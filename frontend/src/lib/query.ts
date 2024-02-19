@@ -84,7 +84,16 @@ export const LOGOUT = gql`
 
 export const REGISTER = gql`
   mutation Register($createUserInput: CreateUserInput!) {
-    createUser(createUserInput: $createUserInput)
+    createUser(createUserInput: $createUserInput) {
+      message
+      user {
+        _id
+        email
+        password
+        role
+        watchPoint
+      }
+    }
   }
 `;
 
