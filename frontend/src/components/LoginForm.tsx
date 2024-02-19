@@ -47,7 +47,7 @@ export default function Login() {
           },
         },
         refetchQueries: [{ query: GET_SESSION }],
-        onQueryUpdated: () => {
+        onCompleted: () => {
           const dialog = document.getElementById(
             "authForm",
           ) as HTMLDialogElement;
@@ -56,7 +56,7 @@ export default function Login() {
       }),
       {
         loading: "Logging in...",
-        success: ({ data }) => data.login,
+        success: ({ data }) => data.login.message,
         error: (error) => handleError(error),
       },
     );

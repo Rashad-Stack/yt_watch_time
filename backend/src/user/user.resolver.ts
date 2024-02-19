@@ -1,8 +1,10 @@
-import { UnauthorizedException } from "@nestjs/common";
+import { UnauthorizedException, UseGuards } from "@nestjs/common";
 import { Args, Context, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Request } from "express";
 import { ObjectId } from "mongoose";
+import { AuthGuard } from "src/auth/auth.guard";
 import { AuthResolver } from "src/auth/auth.resolver";
+import { RolesGuard } from "src/auth/dto/roles.guard";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { User } from "./schema/user.schema";
@@ -21,6 +23,7 @@ export class UserResolver {
   }
 
   @Query(() => [User], { name: "users" })
+  @UseGuards(AuthGuard, RolesGuard)
   findAll() {
     return this.userService.findAll();
   }

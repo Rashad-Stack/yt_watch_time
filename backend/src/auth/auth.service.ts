@@ -26,7 +26,7 @@ export class AuthService {
       // Find the user by email
       const user = await this.userModel.findOne(
         { email: LoginInput.email },
-        "password",
+        "password role",
       );
 
       if (!user) {
@@ -41,7 +41,7 @@ export class AuthService {
 
       // Remove the password from the user object
       user.password = undefined;
-      console.log(user);
+
       // Create Authenticated User Token
       const token = user.createAuthToken();
 

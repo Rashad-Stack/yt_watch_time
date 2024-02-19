@@ -1,10 +1,10 @@
 import { UnauthorizedException } from "@nestjs/common";
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Request, Response } from "express";
-import { User } from "src/user/schema/user.schema";
 import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 import { LoginInput } from "./dto/login.input";
+import { Session } from "./dto/session.dto";
 import { LoggedInUser } from "./dto/user.dto";
 
 @Resolver()
@@ -39,7 +39,7 @@ export class AuthResolver {
     return "Logout successful!";
   }
 
-  @Query(() => User)
+  @Query(() => Session)
   async session(@Context() { req }: { req: Request }) {
     const { token } = req.cookies;
 
