@@ -1,8 +1,10 @@
-import { BadRequestException } from "@nestjs/common";
-import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { Request } from "express";
+import { BadRequestException, UseGuards } from "@nestjs/common";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { ObjectId } from "mongoose";
+import { AuthGuard } from "src/auth/auth.guard";
 import { AuthResolver } from "src/auth/auth.resolver";
+import { CurrentUser } from "src/auth/current.user.decorator";
+import { User } from "src/user/schema/user.schema";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
 import { PaginateVideo } from "./dto/videos.dto";
@@ -17,9 +19,10 @@ export class VideoResolver {
   ) {}
 
   @Mutation(() => Video)
+  @UseGuards(AuthGuard)
   async createVideo(
     @Args("createVideoInput") createVideoInput: CreateVideoInput,
-    @Context() { req }: { req: Request },
+    @CurrentUser() user: User,
   ): Promise<Video> {
     const urls = ["youtu.be", "youtube"];
     const isYoutubeUrl = urls.some((url) => createVideoInput.url.includes(url));
@@ -27,7 +30,7 @@ export class VideoResolver {
     if (!isYoutubeUrl) {
       throw new BadRequestException("Invalid Youtube video URL");
     }
-    const user = await this.authResolver.session({ req });
+
     return this.videoService.create(user, createVideoInput);
   }
 

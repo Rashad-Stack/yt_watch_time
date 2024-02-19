@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { Observable } from "rxjs";
-import { AuthService } from "../auth.service";
+import { AuthService } from "./auth.service";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
