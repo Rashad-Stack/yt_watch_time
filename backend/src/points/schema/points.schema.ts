@@ -37,3 +37,15 @@ export class Point extends Document {
 export type PointDocument = Point & Document;
 
 export const PointSchema = SchemaFactory.createForClass(Point);
+
+// populate the user field
+
+const populate = function (next) {
+  this.populate("user");
+  next();
+};
+
+// pre hooks
+PointSchema.pre("find", populate)
+  .pre("findOne", populate)
+  .pre("findOneAndUpdate", populate);

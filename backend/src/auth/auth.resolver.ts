@@ -1,7 +1,7 @@
 import { UseGuards } from "@nestjs/common";
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Request, Response } from "express";
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
 import { User } from "src/user/schema/user.schema";
 import { UserService } from "src/user/user.service";
 import { AuthGuard } from "./auth.guard";
@@ -44,7 +44,7 @@ export class AuthResolver {
 
   @Query(() => User)
   @UseGuards(AuthGuard)
-  async session(@CurrentUser() currentUser: ObjectId): Promise<User> {
+  async session(@CurrentUser() currentUser: Types.ObjectId): Promise<User> {
     // Find the user by id
     const user = await this.userService.findOne(currentUser);
 

@@ -54,11 +54,13 @@ export class PointsResolver {
   }
 
   @Mutation(() => Point)
+  @UseGuards(AuthGuard, RolesGuard)
   updatePoint(@Args("id") updatePointInput: UpdatePointInput) {
     return this.pointsService.update(updatePointInput.id, updatePointInput);
   }
 
   @Mutation(() => Point)
+  @UseGuards(AuthGuard, RolesGuard)
   removePoint(@Args("id", { type: () => Int }) id: number) {
     return this.pointsService.remove(id);
   }

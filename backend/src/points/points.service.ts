@@ -1,11 +1,10 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { CreatePointInput } from "./dto/create-point.input";
-import { UpdatePointInput } from "./dto/update-point.input";
-
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, ObjectId } from "mongoose";
 import { User } from "src/user/schema/user.schema";
+import { CreatePointInput } from "./dto/create-point.input";
 import { PaginatePoints } from "./dto/point.dto";
+import { UpdatePointInput } from "./dto/update-point.input";
 import { Point } from "./schema/points.schema";
 
 @Injectable()
@@ -16,8 +15,12 @@ export class PointsService {
   ) {}
   async create(user: User, createPointInput: CreatePointInput) {
     try {
-      await this.pointRepository.create({ ...createPointInput, user: user });
-      return "Request send successfully!";
+      const point = new this.pointRepository({
+        ...createPointInput,
+        user: user,
+      });
+      await point.save();
+      return point;
     } catch (error) {
       throw new InternalServerErrorException();
     }
@@ -30,7 +33,7 @@ export class PointsService {
     filter: boolean,
   ): Promise<PaginatePoints> {
     try {
-      let promise = this.pointRepository.find().populate("user");
+      let promise = this.pointRepository.find();
       let totalPromise = this.pointRepository.countDocuments();
 
       if (search) {
