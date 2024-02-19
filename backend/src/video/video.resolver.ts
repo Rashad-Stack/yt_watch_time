@@ -2,28 +2,24 @@ import { BadRequestException, UseGuards } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Types } from "mongoose";
 import { AuthGuard } from "src/auth/auth.guard";
-import { AuthResolver } from "src/auth/auth.resolver";
 import { CurrentUser } from "src/auth/current.user.decorator";
 import { User } from "src/user/schema/user.schema";
 import { CreateVideoInput } from "./dto/create-video.input";
 import { UpdateVideoInput } from "./dto/update-video.input";
-import { PaginateVideo } from "./dto/videos.dto";
+import { NewVideo, PaginateVideo } from "./dto/videos.dto";
 import { Video } from "./schema/video.schema";
 import { VideoService } from "./video.service";
 
 @Resolver(() => Video)
 export class VideoResolver {
-  constructor(
-    private readonly videoService: VideoService,
-    private readonly authResolver: AuthResolver,
-  ) {}
+  constructor(private readonly videoService: VideoService) {}
 
-  @Mutation(() => Video)
+  @Mutation(() => NewVideo)
   @UseGuards(AuthGuard)
   async createVideo(
     @Args("createVideoInput") createVideoInput: CreateVideoInput,
     @CurrentUser() user: User,
-  ): Promise<{ video: Video; message: string }> {
+  ): Promise<NewVideo> {
     const urls = ["youtu.be", "youtube"];
     const isYoutubeUrl = urls.some((url) => createVideoInput.url.includes(url));
 
@@ -35,7 +31,7 @@ export class VideoResolver {
 
     return {
       video,
-      message: "Video created successfully",
+      message: "Video posted",
     };
   }
 
@@ -48,6 +44,7 @@ export class VideoResolver {
   }
 
   @Query(() => Video, { name: "video" })
+  @UseGuards(AuthGuard)
   async findOne(
     @Args("id", { type: () => String }) id: Types.ObjectId,
   ): Promise<Video> {
@@ -55,12 +52,24 @@ export class VideoResolver {
   }
 
   @Mutation(() => Video)
+  @UseGuards(AuthGuard)
   updateVideo(@Args("updateVideoInput") updateVideoInput: UpdateVideoInput) {
     return this.videoService.update(updateVideoInput.id, updateVideoInput);
   }
 
-  @Mutation(() => Video)
-  removeVideo(@Args("id", { type: () => String }) id: Types.ObjectId) {
-    return this.videoService.remove(id);
+  @Mutation(() => String)
+  @UseGuards(AuthGuard)
+  async removeVideo(
+    @Args("videoId", { type: () => String }) videoId: Types.ObjectId,
+  ): Promise<string> {
+    return await this.videoService.remove(videoId);
+  }
+
+  @Mutation(() => String)
+  @UseGuards(AuthGuard)
+  async removeAllVideos(
+    @CurrentUser() userId: Types.ObjectId,
+  ): Promise<string> {
+    return await this.videoService.deleteAll(userId);
   }
 }

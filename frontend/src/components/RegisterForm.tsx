@@ -31,7 +31,7 @@ export default function Register() {
           },
         },
         refetchQueries: [{ query: GET_SESSION }],
-        onQueryUpdated: () => {
+        onCompleted: () => {
           const dialog = document.getElementById(
             "authForm",
           ) as HTMLDialogElement;

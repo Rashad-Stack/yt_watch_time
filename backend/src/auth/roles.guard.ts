@@ -23,7 +23,7 @@ export class RolesGuard implements CanActivate {
 
     const payload = this.authService.verifyToken(token);
 
-    if (payload.role !== "admin") {
+    if (payload?.role !== "admin") {
       throw new ForbiddenException(
         "You are not authorized to perform this action!",
       );

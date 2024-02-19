@@ -9,3 +9,12 @@ export class PaginateVideo {
   @Field(() => Int)
   totalVideos: number;
 }
+
+@ObjectType("newVideo")
+export class NewVideo {
+  @Field(() => Video)
+  video: Video;
+
+  @Field(() => String)
+  message: string;
+}

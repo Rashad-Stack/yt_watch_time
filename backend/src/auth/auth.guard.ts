@@ -2,16 +2,19 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { Observable } from "rxjs";
+import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
@@ -35,10 +38,23 @@ export class AuthGuard implements CanActivate {
         );
       }
 
-      return true;
+      // Find the user by id
+      async function isUser(service: UserService): Promise<boolean> {
+        const user = await service.findOne(payload.id);
+
+        if (!user) {
+          throw new UnauthorizedException(
+            "You are not authorized to perform this action.",
+          );
+        }
+
+        return true;
+      }
+
+      return isUser(this.userService);
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(error);
+      console.error(error);
+      throw error;
     }
   }
 }

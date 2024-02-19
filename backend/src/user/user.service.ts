@@ -45,7 +45,7 @@ export class UserService {
     }
   }
 
-  async findOne(userId: Types.ObjectId) {
+  async findOne(userId: Types.ObjectId): Promise<User> {
     try {
       const user = await this.userModel.findOne({
         _id: userId,

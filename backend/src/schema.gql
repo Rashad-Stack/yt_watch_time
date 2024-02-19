@@ -32,12 +32,13 @@ input LoginInput {
 type Mutation {
   createPoint(createPointInput: CreatePointInput!): String!
   createUser(createUserInput: CreateUserInput!): Signup!
-  createVideo(createVideoInput: CreateVideoInput!): Video!
+  createVideo(createVideoInput: CreateVideoInput!): newVideo!
   login(loginInput: LoginInput!): LoggedInUser!
   logout: String!
+  removeAllVideos: String!
   removePoint(id: Int!): Point!
   removeUser(id: Int!): User!
-  removeVideo(id: String!): Video!
+  removeVideo(videoId: String!): String!
   updatePoint(id: UpdatePointInput!): Point!
   updateUser(updateUserInput: UpdateUserInput!): User!
   updateUserPoint(updateUserInput: UpdateUserInput!): String!
@@ -105,6 +106,11 @@ type Video {
   title: String!
   url: String!
   user: User!
+}
+
+type newVideo {
+  message: String!
+  video: Video!
 }
 
 type points {
