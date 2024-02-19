@@ -65,18 +65,19 @@ export type UserDocument = User & Document;
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
+// Hash the password before saving the user
 UserSchema.pre("save", function (next) {
   const salt = bcrypt.genSaltSync(10);
   this.password = bcrypt.hashSync(this.password, salt);
   next();
 });
 
-UserSchema.pre("findOne", function (next) {
+// Populate queries
+const populate = function (next) {
   this.populate("points").populate("videos");
   next();
-});
+};
 
-UserSchema.pre("find", function (next) {
-  this.populate("points").populate("videos");
-  next();
-});
+UserSchema.pre("findOne", populate);
+UserSchema.pre("find", populate);
+UserSchema.pre("findOneAndUpdate", populate);

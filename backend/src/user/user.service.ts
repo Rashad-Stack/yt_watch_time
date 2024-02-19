@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, ObjectId } from "mongoose";
+import { Model, Types } from "mongoose";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { User, UserDocument } from "./schema/user.schema";
@@ -20,12 +20,12 @@ export class UserService {
   async create(createUserInput: CreateUserInput) {
     try {
       // Create a new instance of the User entity and set its properties
-
       const user = new this.userModel(createUserInput);
 
+      // Save the user entity to the database
       await user.save();
 
-      return "User created successfully!";
+      return user;
     } catch (error) {
       if (error.code === 11000) {
         throw new ConflictException("Email already exists", {
@@ -45,7 +45,7 @@ export class UserService {
     }
   }
 
-  async findOne(userId: ObjectId) {
+  async findOne(userId: Types.ObjectId) {
     try {
       const user = await this.userModel.findOne({
         _id: userId,
@@ -61,13 +61,15 @@ export class UserService {
     }
   }
 
-  async updatePoint(loggedUserId: ObjectId, hostUserId: ObjectId) {
+  async updatePoint(loggedUserId: Types.ObjectId, hostUserId: Types.ObjectId) {
     try {
+      // Find the user by id and update the watchPoint field
       await this.userModel.findOneAndUpdate(
         { _id: hostUserId, watchPoint: { $gt: 0 } },
         { $inc: { watchPoint: -1 } },
       );
 
+      // Find the user by id and update the watchPoint field
       await this.userModel.findByIdAndUpdate(loggedUserId, {
         $inc: { watchPoint: 1 },
       });
@@ -78,19 +80,15 @@ export class UserService {
     }
   }
 
-  async approveUpdatePoint(userId: ObjectId, points: number) {
+  async approveUpdatePoint(userId: Types.ObjectId, points: number) {
     try {
-      const user = await this.userModel
-        .findByIdAndUpdate(
-          userId,
-          {
-            $inc: { watchPoint: points },
-          },
-          { new: true },
-        )
-        .populate("points");
-
-      console.log(user);
+      const user = await this.userModel.findByIdAndUpdate(
+        userId,
+        {
+          $inc: { watchPoint: points },
+        },
+        { new: true },
+      );
 
       return user;
     } catch (error) {
@@ -98,11 +96,11 @@ export class UserService {
     }
   }
 
-  update(userId: ObjectId, updateUserInput: UpdateUserInput) {
+  update(userId: Types.ObjectId, updateUserInput: UpdateUserInput) {
     return `This action updates a #${userId} user: ${updateUserInput.email}`;
   }
 
-  remove(id: number) {
+  remove(id: Types.ObjectId) {
     return `This action removes a #${id} user`;
   }
 }
