@@ -2,7 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
-import mongoose, { Document, ObjectId } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 import { Point } from "src/points/schema/points.schema";
 import { Video } from "src/video/schema/video.schema";
 
@@ -31,33 +31,31 @@ import { Video } from "src/video/schema/video.schema";
 })
 export class User {
   @Field(() => String)
-  _id: ObjectId;
+  _id: Types.ObjectId | User;
 
   @Field(() => String)
-  @Prop({ unique: true })
+  @Prop({ unique: true, required: true, type: String })
   email: string;
 
   @Field(() => String)
-  @Prop({ length: 8, select: false })
+  @Prop({ length: 8, select: false, required: true, type: String })
   password: string;
 
   @Field(() => Number)
-  @Prop({ default: 100 }) // Default value for watchPoint
+  @Prop({ default: 100, required: true, type: Number }) // Default value for watchPoint
   watchPoint: number;
 
   @Field(() => String)
-  @Prop({ default: "user" }) // Default value for role
+  @Prop({ default: "user", required: true, type: String }) // Default value for role
   role: string;
 
   @Field(() => [Video])
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }])
-  videos: Video[];
+  videos: Types.ObjectId[] | Video[];
 
   @Field(() => [Point])
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }])
-  points: Point[];
-
-  metadata: Record<string, any> | any;
+  points: Types.ObjectId[] | Point[];
 
   readonly comparePassword: (password: string) => Promise<boolean>;
   readonly createAuthToken: () => string;

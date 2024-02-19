@@ -38,7 +38,6 @@ export class AuthResolver {
   @Mutation(() => String)
   @UseGuards(AuthGuard)
   async logout(@Context() { res }: { res: Response; req: Request }) {
-    // await this.session({ req });
     res.clearCookie("token");
     return "Logout successful!";
   }
