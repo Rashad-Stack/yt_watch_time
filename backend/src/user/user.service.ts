@@ -9,12 +9,12 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, ObjectId } from "mongoose";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
-import { User } from "./schema/user.schema";
+import { User, UserDocument } from "./schema/user.schema";
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
   async create(createUserInput: CreateUserInput) {
@@ -39,7 +39,7 @@ export class UserService {
 
   async findAll() {
     try {
-      return await this.userModel.find().populate("points");
+      return await this.userModel.find();
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

@@ -56,6 +56,8 @@ export class User {
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }])
   points: Point[];
 
+  metadata: Record<string, any> | any;
+
   readonly comparePassword: (password: string) => Promise<boolean>;
   readonly createAuthToken: () => string;
 }
@@ -71,6 +73,11 @@ UserSchema.pre("save", function (next) {
 });
 
 UserSchema.pre("findOne", function (next) {
-  this.populate("points");
+  this.populate("points").populate("videos");
+  next();
+});
+
+UserSchema.pre("find", function (next) {
+  this.populate("points").populate("videos");
   next();
 });

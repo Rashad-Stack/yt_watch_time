@@ -67,7 +67,12 @@ export const GET_POINTS = gql`
 // MUTATIONS
 export const LOGIN = gql`
   mutation Login($loginInput: LoginInput!) {
-    login(loginInput: $loginInput)
+    login(loginInput: $loginInput) {
+      user {
+        _id
+      }
+      message
+    }
   }
 `;
 

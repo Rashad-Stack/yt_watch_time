@@ -7,13 +7,13 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { Model } from "mongoose";
-import { User } from "src/user/schema/user.schema";
+import { User, UserDocument } from "src/user/schema/user.schema";
 import { LoginInput } from "./dto/login.input";
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
   // Verify the token
@@ -39,6 +39,9 @@ export class AuthService {
         throw new UnauthorizedException("Invalid credentials!");
       }
 
+      // Remove the password from the user object
+      user.password = undefined;
+      console.log(user);
       // Create Authenticated User Token
       const token = user.createAuthToken();
 
