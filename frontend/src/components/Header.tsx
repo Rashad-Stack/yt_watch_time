@@ -1,5 +1,6 @@
+import { useQuery } from "@apollo/client";
 import { Button, Navbar } from "flowbite-react";
-import { useAuth } from "../hooks/useAuth";
+import { GET_SESSION } from "../lib/query";
 import AddVideo from "./AddVideo";
 import AppModal from "./AppModal";
 import BuyPoint from "./BuyPoint";
@@ -7,7 +8,8 @@ import FormTab from "./FormTab";
 import Logout from "./Logout";
 
 export default function Header() {
-  const { isAuthenticated, user, loading } = useAuth();
+  const { data, loading } = useQuery(GET_SESSION);
+  const user = data?.session;
 
   return (
     <>
@@ -17,7 +19,7 @@ export default function Header() {
             {loading ? (
               <div className="skeleton h-10 w-10 shrink-0 rounded-full" />
             ) : (
-              isAuthenticated && (
+              user && (
                 <div className="flex items-center gap-2">
                   <div className="avatar placeholder flex items-center gap-2">
                     <div className="w-10 rounded-full bg-neutral text-neutral-content">
@@ -36,13 +38,13 @@ export default function Header() {
             {loading ? (
               <div className="skeleton h-10 w-24 !rounded-lg" />
             ) : (
-              isAuthenticated && <Logout />
+              user && <Logout />
             )}
 
             {loading ? (
               <div className="skeleton h-10 w-24 !rounded-lg" />
             ) : (
-              !isAuthenticated && (
+              !user && (
                 <Button
                   onClick={() => {
                     const dialog = document.getElementById(
@@ -74,7 +76,7 @@ export default function Header() {
             {loading ? (
               <div className="skeleton h-4 w-32 !rounded-lg" />
             ) : (
-              isAuthenticated && (
+              user && (
                 <Navbar.Link
                   className="cursor-pointer"
                   onClick={() => {
@@ -93,7 +95,7 @@ export default function Header() {
             {loading ? (
               <div className="skeleton h-4 w-32 !rounded-lg" />
             ) : (
-              isAuthenticated && (
+              user && (
                 <Navbar.Link
                   className="cursor-pointer"
                   onClick={() => {

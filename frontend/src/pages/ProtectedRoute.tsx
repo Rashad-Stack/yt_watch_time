@@ -1,21 +1,29 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useQuery } from "@apollo/client";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { GET_SESSION } from "../lib/query";
 
 type Props = {
   children: React.ReactNode;
 };
 
 export default function ProtectedRoute({ children }: Props) {
-  const { isAuthenticated, loading } = useAuth();
+  const { data, loading } = useQuery(GET_SESSION);
+  const user = data?.session;
+  const navigate = useNavigate();
 
-  console.log(isAuthenticated);
+  useEffect(() => {
+    if (user && user.role === "admin") {
+      return navigate("/dashboard");
+    }
+    navigate("/");
+  }, [user, navigate]);
 
   return loading ? (
-    <div>Loading</div>
-  ) : isAuthenticated ? (
-    children
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="h-16 w-16 animate-spin rounded-full border-8 border-dashed border-blue-600" />
+    </div>
   ) : (
-    <Navigate to="/" />
+    children
   );
 }

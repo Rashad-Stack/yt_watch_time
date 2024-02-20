@@ -9,7 +9,6 @@ import ReactDOM from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
-import AppContextProvider from "./context/AppContextProvider.tsx";
 import "./index.css";
 
 const link = createHttpLink({
@@ -28,9 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <ApolloProvider client={client}>
-        <AppContextProvider>
-          <App />
-        </AppContextProvider>
+        <App />
         <Toaster position="top-center" reverseOrder={false} />
       </ApolloProvider>
     </BrowserRouter>

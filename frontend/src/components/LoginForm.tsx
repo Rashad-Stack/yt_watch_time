@@ -2,7 +2,6 @@ import { useMutation } from "@apollo/client";
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useAuth } from "../hooks/useAuth";
 import { handleError } from "../lib/handleError";
 import { GET_SESSION, LOGIN } from "../lib/query";
 
@@ -26,9 +25,8 @@ const initialState = {
 };
 
 export default function Login() {
-  const { setUser } = useAuth();
   const [login, { loading }] = useMutation(LOGIN, {
-    onCompleted: () => setUser(),
+    refetchQueries: [{ query: GET_SESSION }],
   });
 
   const {
@@ -46,7 +44,6 @@ export default function Login() {
             password: data.password,
           },
         },
-        refetchQueries: [{ query: GET_SESSION }],
         onCompleted: () => {
           const dialog = document.getElementById(
             "authForm",

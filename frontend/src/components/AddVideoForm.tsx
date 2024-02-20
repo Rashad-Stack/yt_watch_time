@@ -3,7 +3,6 @@ import { Button, Label, TextInput } from "flowbite-react";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useAuth } from "../hooks/useAuth";
 import { handleError } from "../lib/handleError";
 import { GET_VIDEOS, POST_VIDEO } from "../lib/query";
 
@@ -19,7 +18,6 @@ type Inputs = {
 
 export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
   const [addVideo, { loading }] = useMutation(POST_VIDEO);
-  const { clearUser } = useAuth();
 
   const {
     register,
@@ -50,7 +48,7 @@ export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
       {
         loading: "adding...",
         success: ({ data }) => data.createVideo.message,
-        error: (error) => handleError(error, clearUser),
+        error: (error) => handleError(error),
       },
     );
   };

@@ -3,7 +3,6 @@ import Dashboard from "./pages/Dashboard";
 import ErrorPage from "./pages/Error";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
-import PostVideo from "./pages/PostVideo";
 import ProtectedRoute from "./pages/ProtectedRoute";
 
 function App() {
@@ -12,22 +11,14 @@ function App() {
       <Route
         element={
           <Layout>
-            <Outlet />
-          </Layout>
-        }
-      >
-        <Route index element={<Home />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        {/* Protected */}
-        <Route
-          element={
             <ProtectedRoute>
               <Outlet />
             </ProtectedRoute>
-          }
-        >
-          <Route path="/post-video" element={<PostVideo />} />
-        </Route>
+          </Layout>
+        }
+      >
+        <Route path="/" element={<Home />} />
+        <Route path="dashboard" element={<Dashboard />} />
       </Route>
       <Route path="*" element={<ErrorPage />} />
     </Routes>

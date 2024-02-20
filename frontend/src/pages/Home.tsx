@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Button } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Empty from "../components/Empty";
 import ErrorMessage from "../components/ErrorMessage";
 import LoadingSkeleton from "../components/LoadingSkeleton";
@@ -11,14 +11,10 @@ import { GET_VIDEOS } from "../lib/query";
 import { Video } from "../types";
 
 export default function Home() {
-  const [videos, setVideos] = useState<Video[]>([]);
   const [page, setPage] = useState(1);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [loadMoreLoading, setLoadMoreLoading] = useState(false);
-  const { data, fetchMore, loading, error } = useQuery(GET_VIDEOS, {
-    onCompleted: (data) => {
-      setVideos(data?.allVideos?.videos || []);
-    },
-  });
+  const { data, fetchMore, loading, error } = useQuery(GET_VIDEOS);
 
   const { totalVideos } = data?.allVideos || {};
 
@@ -35,6 +31,12 @@ export default function Home() {
     setPage(page + 1);
     setLoadMoreLoading(false);
   };
+
+  useEffect(() => {
+    if (data) {
+      setVideos(data.allVideos.videos);
+    }
+  }, [data]);
 
   return (
     <section>

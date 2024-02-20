@@ -3,7 +3,6 @@ import { Card, Progress, ToggleSwitch } from "flowbite-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import ReactPlayer from "react-player";
-import { useAuth } from "../hooks/useAuth";
 import { handleError } from "../lib/handleError";
 import { GET_SESSION, UPDATE_USER_POINT } from "../lib/query";
 import { Video } from "../types";
@@ -17,7 +16,6 @@ export default function VideoCard({ video }: Props) {
   const [played, setPlayed] = useState<number>(0);
   const [muted, setMuted] = useState<boolean>(true);
   const [updatePoints] = useMutation(UPDATE_USER_POINT);
-  const { clearUser } = useAuth();
 
   const handleUpdatePoints = (played: number) => {
     if (Math.floor(played) === 40) {
@@ -33,7 +31,7 @@ export default function VideoCard({ video }: Props) {
         {
           loading: "Updating points...",
           success: "Points added",
-          error: (error) => handleError(error, clearUser),
+          error: (error) => handleError(error),
         },
       );
     }
