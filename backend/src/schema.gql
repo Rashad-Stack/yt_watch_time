@@ -4,8 +4,7 @@
 
 input CreatePointInput {
   phone: String!
-  points: Float!
-  price: Float!
+  price: Int!
   trxId: String!
 }
 
@@ -30,40 +29,36 @@ input LoginInput {
 }
 
 type Mutation {
-  createPoint(createPointInput: CreatePointInput!): String!
+  createPoint(createPointInput: CreatePointInput!): newPoints!
   createUser(createUserInput: CreateUserInput!): Signup!
   createVideo(createVideoInput: CreateVideoInput!): newVideo!
   login(loginInput: LoginInput!): LoggedInUser!
   logout: String!
   removeAllVideos: String!
-  removePoint(id: Int!): Point!
-  removeUser(id: Int!): User!
   removeVideo(videoId: String!): String!
-  updatePoint(id: UpdatePointInput!): Point!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  sendPointsToUser(pointId: String!, status: String!): updatedPoints!
   updateUserPoint(updateUserInput: UpdateUserInput!): String!
-  updateVideo(updateVideoInput: UpdateVideoInput!): Video!
-  updateWatchPoint(userId: String!, watchPoints: Int!): User!
 }
 
 type Point {
   _id: String!
+  createdAt: String!
   isApproved: Boolean!
   phone: String!
   points: Int!
   price: Int!
+  status: String!
   trxId: String!
+  updatedAt: String!
   user: User!
 }
 
 type Query {
   allVideos(limit: Float! = 12, page: Float! = 1): videos!
-  point(id: String!): Point!
-  points(filter: Boolean = false, limit: Int! = 20, page: Int! = 1, search: String): points!
+  points(filter: String, limit: Int! = 20, page: Int! = 1, search: String): points!
   session: User!
   user(id: String!): User!
   users: [User!]!
-  video(id: String!): Video!
 }
 
 type Signup {
@@ -71,24 +66,10 @@ type Signup {
   user: User!
 }
 
-input UpdatePointInput {
-  id: String!
-  phone: String
-  points: Float!
-  price: Float
-  trxId: String
-}
-
 input UpdateUserInput {
   _id: String!
   email: String
   password: String
-}
-
-input UpdateVideoInput {
-  id: String!
-  title: String!
-  url: String!
 }
 
 type User {
@@ -108,6 +89,11 @@ type Video {
   user: User!
 }
 
+type newPoints {
+  message: String!
+  point: Point!
+}
+
 type newVideo {
   message: String!
   video: Video!
@@ -117,6 +103,11 @@ type points {
   pages: Int!
   points: [Point!]!
   total: Int!
+}
+
+type updatedPoints {
+  message: String!
+  point: Point!
 }
 
 type videos {

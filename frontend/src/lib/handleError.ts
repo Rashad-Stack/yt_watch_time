@@ -34,10 +34,18 @@ export const handleError = (
         }
         if (err.message === "jwt expired") {
           clearUser?.({ type: ActionType.LOGOUT });
+          const dialog = document.getElementById(
+            "authForm",
+          ) as HTMLDialogElement;
+          dialog.showModal();
           return "Session expired. Please login again.";
         }
         if (err.message === "Invalid token!") {
           clearUser?.({ type: ActionType.LOGOUT });
+          const dialog = document.getElementById(
+            "authForm",
+          ) as HTMLDialogElement;
+          dialog.showModal();
           return "Session expired. Please login again.";
         }
         return err.message;

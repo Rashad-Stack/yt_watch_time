@@ -1,4 +1,4 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, Int } from "@nestjs/graphql";
 import {
   IsNotEmpty,
   IsNumber,
@@ -9,13 +9,7 @@ import {
 
 @InputType()
 export class CreatePointInput {
-  @Field(() => Number)
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(10)
-  points: number;
-
-  @Field(() => Number)
+  @Field(() => Int)
   @IsNotEmpty()
   @IsNumber()
   @Min(1)

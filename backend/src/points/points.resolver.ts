@@ -1,15 +1,17 @@
 import { UseGuards } from "@nestjs/common";
 import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
 import { AuthGuard } from "src/auth/auth.guard";
-import { AuthResolver } from "src/auth/auth.resolver";
-import { AuthService } from "src/auth/auth.service";
 import { CurrentUser } from "src/auth/current.user.decorator";
 import { RolesGuard } from "src/auth/roles.guard";
-import { User } from "src/user/schema/user.schema";
+import { UserService } from "src/user/user.service";
 import { CreatePointInput } from "./dto/create-point.input";
-import { PaginatePoints } from "./dto/point.dto";
-import { UpdatePointInput } from "./dto/update-point.input";
+import {
+  NewPoints,
+  PaginatePoints,
+  Status,
+  UpdatedPoints,
+} from "./dto/point.dto";
 import { PointsService } from "./points.service";
 import { Point } from "./schema/points.schema";
 
@@ -17,17 +19,21 @@ import { Point } from "./schema/points.schema";
 export class PointsResolver {
   constructor(
     private readonly pointsService: PointsService,
-    private readonly authService: AuthService,
-    private readonly authResolver: AuthResolver,
+    private readonly userService: UserService,
   ) {}
 
-  @Mutation(() => String)
+  @Mutation(() => NewPoints)
   @UseGuards(AuthGuard)
   async createPoint(
     @Args("createPointInput") createPointInput: CreatePointInput,
-    @CurrentUser() user: User,
-  ) {
-    return this.pointsService.create(user, createPointInput);
+    @CurrentUser() user: Types.ObjectId,
+  ): Promise<NewPoints> {
+    const point = await this.pointsService.create(user, createPointInput);
+
+    return {
+      point,
+      message: "Request send",
+    };
   }
 
   @Query(() => PaginatePoints, { name: "points" })
@@ -38,30 +44,32 @@ export class PointsResolver {
     @Args("search", { type: () => String, nullable: true })
     search: string,
     @Args("filter", {
-      type: () => Boolean,
-      defaultValue: false,
+      type: () => String,
       nullable: true,
     })
-    filter: boolean,
+    filter: Status,
   ): Promise<PaginatePoints> {
     return this.pointsService.findAll(page, limit, search, filter);
   }
 
-  @Query(() => Point, { name: "point" })
+  @Mutation(() => UpdatedPoints)
   @UseGuards(AuthGuard, RolesGuard)
-  async findOne(@Args("id", { type: () => String }) id: ObjectId) {
-    return this.pointsService.findOne(id);
-  }
+  async sendPointsToUser(
+    @Args("pointId", { type: () => String }) pointId: Types.ObjectId,
+    @Args("status", { type: () => String }) status: Status,
+  ) {
+    const point = await this.pointsService.approve(pointId, status);
+    if (point.status === Status.Approved) {
+      await this.userService.approveUpdatePoint(
+        point.user,
+        point._id,
+        point.points,
+      );
+    }
 
-  @Mutation(() => Point)
-  @UseGuards(AuthGuard, RolesGuard)
-  updatePoint(@Args("id") updatePointInput: UpdatePointInput) {
-    return this.pointsService.update(updatePointInput.id, updatePointInput);
-  }
-
-  @Mutation(() => Point)
-  @UseGuards(AuthGuard, RolesGuard)
-  removePoint(@Args("id", { type: () => Int }) id: number) {
-    return this.pointsService.remove(id);
+    return {
+      point,
+      message: "Sended",
+    };
   }
 }

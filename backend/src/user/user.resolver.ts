@@ -1,5 +1,5 @@
 import { UseGuards } from "@nestjs/common";
-import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Types } from "mongoose";
 import { AuthGuard } from "src/auth/auth.guard";
 import { CurrentUser } from "src/auth/current.user.decorator";
@@ -38,12 +38,6 @@ export class UserResolver {
     return this.userService.findOne(id);
   }
 
-  @Mutation(() => User)
-  @UseGuards(AuthGuard)
-  async updateUser(@Args("updateUserInput") updateUserInput: UpdateUserInput) {
-    return this.userService.update(updateUserInput._id, updateUserInput);
-  }
-
   @Mutation(() => String)
   @UseGuards(AuthGuard)
   async updateUserPoint(
@@ -51,20 +45,5 @@ export class UserResolver {
     @CurrentUser() currentUser: Types.ObjectId,
   ) {
     return this.userService.updatePoint(currentUser, updateUserInput._id);
-  }
-
-  @Mutation(() => User)
-  @UseGuards(AuthGuard, RolesGuard)
-  async updateWatchPoint(
-    @Args("userId", { type: () => String }) userId: Types.ObjectId,
-    @Args("watchPoints", { type: () => Int }) watchPoints: number,
-  ) {
-    return this.userService.approveUpdatePoint(userId, watchPoints);
-  }
-
-  @Mutation(() => User)
-  @UseGuards(AuthGuard)
-  removeUser(@Args("id", { type: () => Int }) id: Types.ObjectId) {
-    return this.userService.remove(id);
   }
 }

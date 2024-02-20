@@ -38,7 +38,7 @@ export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
           createVideoInput: data,
         },
         refetchQueries: [{ query: GET_VIDEOS }],
-        onQueryUpdated: () => {
+        onCompleted: () => {
           reset();
           setVideoUrl("");
           const dialog = document.getElementById(
@@ -49,9 +49,7 @@ export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
       }),
       {
         loading: "adding...",
-        success: () => {
-          return "Video added successfully";
-        },
+        success: ({ data }) => data.createVideo.message,
         error: (error) => handleError(error, clearUser),
       },
     );

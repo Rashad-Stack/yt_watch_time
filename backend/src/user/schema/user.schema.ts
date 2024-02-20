@@ -70,13 +70,3 @@ UserSchema.pre("save", function (next) {
   this.password = bcrypt.hashSync(this.password, salt);
   next();
 });
-
-// Populate queries
-const populate = function (next) {
-  this.populate("points").populate("videos");
-  next();
-};
-
-UserSchema.pre("findOne", populate);
-UserSchema.pre("find", populate);
-UserSchema.pre("findOneAndUpdate", populate);

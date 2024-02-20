@@ -5,7 +5,6 @@ import { AuthGuard } from "src/auth/auth.guard";
 import { CurrentUser } from "src/auth/current.user.decorator";
 import { User } from "src/user/schema/user.schema";
 import { CreateVideoInput } from "./dto/create-video.input";
-import { UpdateVideoInput } from "./dto/update-video.input";
 import { NewVideo, PaginateVideo } from "./dto/videos.dto";
 import { Video } from "./schema/video.schema";
 import { VideoService } from "./video.service";
@@ -41,20 +40,6 @@ export class VideoResolver {
     @Args("page", { defaultValue: 1 }) page: number,
   ): Promise<PaginateVideo> {
     return this.videoService.findAll(limit, page);
-  }
-
-  @Query(() => Video, { name: "video" })
-  @UseGuards(AuthGuard)
-  async findOne(
-    @Args("id", { type: () => String }) id: Types.ObjectId,
-  ): Promise<Video> {
-    return await this.videoService.findOne(id);
-  }
-
-  @Mutation(() => Video)
-  @UseGuards(AuthGuard)
-  updateVideo(@Args("updateVideoInput") updateVideoInput: UpdateVideoInput) {
-    return this.videoService.update(updateVideoInput.id, updateVideoInput);
   }
 
   @Mutation(() => String)

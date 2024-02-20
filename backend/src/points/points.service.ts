@@ -1,28 +1,30 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, ObjectId } from "mongoose";
-import { User } from "src/user/schema/user.schema";
+import { Model, Types } from "mongoose";
 import { CreatePointInput } from "./dto/create-point.input";
-import { PaginatePoints } from "./dto/point.dto";
-import { UpdatePointInput } from "./dto/update-point.input";
-import { Point } from "./schema/points.schema";
+import { PaginatePoints, Status } from "./dto/point.dto";
+import { Point, PointDocument } from "./schema/points.schema";
 
 @Injectable()
 export class PointsService {
   constructor(
     @InjectModel(Point.name)
-    private readonly pointRepository: Model<Point>,
+    private readonly pointModel: Model<PointDocument>,
   ) {}
-  async create(user: User, createPointInput: CreatePointInput) {
+  async create(user: Types.ObjectId, createPointInput: CreatePointInput) {
     try {
-      const point = new this.pointRepository({
+      const point = new this.pointModel({
         ...createPointInput,
         user: user,
       });
       await point.save();
       return point;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -30,11 +32,11 @@ export class PointsService {
     page: number,
     limit: number,
     search: string,
-    filter: boolean,
+    filter: Status,
   ): Promise<PaginatePoints> {
     try {
-      let promise = this.pointRepository.find();
-      let totalPromise = this.pointRepository.countDocuments();
+      let promise = this.pointModel.find();
+      let totalPromise = this.pointModel.countDocuments();
 
       if (search) {
         const searchCriteria = [
@@ -46,21 +48,26 @@ export class PointsService {
         totalPromise = totalPromise.or(searchCriteria);
       }
 
-      if (filter) {
-        promise = promise.where("isApproved").equals(true);
-        totalPromise = totalPromise.where("isApproved").equals(true);
+      if (filter === "Approve") {
+        promise = promise.where("status").equals("Approve");
+        totalPromise = totalPromise.where("status").equals("Approve");
       }
 
-      if (!filter) {
-        promise = promise.where("isApproved").equals(false);
-        totalPromise = totalPromise.where("isApproved").equals(false);
+      if (filter === "Approved") {
+        promise = promise.where("status").equals("Approved");
+        totalPromise = totalPromise.where("status").equals("Approved");
+      }
+
+      if (filter === "Declean") {
+        promise = promise.where("status").equals("Declean");
+        totalPromise = totalPromise.where("status").equals("Declean");
       }
 
       const points = await promise
+        .populate("user")
         .skip((page - 1) * limit)
         .limit(limit)
-        .sort({ createdAt: -1 })
-        .exec();
+        .sort({ createdAt: -1 });
 
       const total = await totalPromise.exec();
 
@@ -76,15 +83,22 @@ export class PointsService {
     }
   }
 
-  findOne(id: ObjectId): Promise<Point> {
-    return this.pointRepository.findById(id).exec();
-  }
-
-  update(id: ObjectId, updatePointInput: UpdatePointInput) {
-    return `This action updates a #${id} point with ${updatePointInput}`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} point`;
+  async approve(pointId: Types.ObjectId, status: Status) {
+    try {
+      const point = await this.pointModel.findByIdAndUpdate(
+        pointId,
+        {
+          isApproved: true,
+          status: status,
+        },
+        { new: true },
+      );
+      if (!point) {
+        throw new NotFoundException();
+      }
+      return point;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }

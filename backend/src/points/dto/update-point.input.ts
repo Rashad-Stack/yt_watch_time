@@ -1,12 +1,13 @@
 import { Field, InputType, PartialType } from "@nestjs/graphql";
 import { IsNotEmpty, IsNumber, Min } from "class-validator";
-import { ObjectId } from "mongoose";
+import { Types } from "mongoose";
+import { Point } from "../schema/points.schema";
 import { CreatePointInput } from "./create-point.input";
 
 @InputType()
 export class UpdatePointInput extends PartialType(CreatePointInput) {
   @Field(() => String)
-  id: ObjectId;
+  id: Types.ObjectId | Point;
 
   @Field(() => Number)
   @IsNotEmpty()

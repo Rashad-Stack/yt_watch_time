@@ -1,7 +1,6 @@
 import { InternalServerErrorException } from "@nestjs/common";
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { NextFunction } from "express";
 import mongoose, { Types } from "mongoose";
 import { User } from "src/user/schema/user.schema";
 
@@ -27,15 +26,6 @@ export class Video {
 export type VideoDocument = Video & Document;
 
 export const VideoSchema = SchemaFactory.createForClass(Video);
-
-// Populate the user field when finding a video
-const populateUser = async function (next: NextFunction) {
-  this.populate("user");
-  next();
-};
-
-// Populate the user field when finding a video
-VideoSchema.pre("findOne", populateUser);
 
 // Pre hooks for push the video to the user's videos array
 VideoSchema.pre("save", async function (next) {

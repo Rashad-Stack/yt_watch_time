@@ -23,7 +23,7 @@ export class AuthResolver {
     @Context() { res }: { res: Response },
   ): Promise<LoggedInUser> {
     // Create a new user
-    const data = await this.authService.create(loginInput);
+    const data = await this.authService.login(loginInput);
 
     // Send the token as a cookie
     this.authService.sendTokenCookies(res, data.token);

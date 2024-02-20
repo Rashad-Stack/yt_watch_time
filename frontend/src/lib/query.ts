@@ -40,7 +40,7 @@ export const GET_VIDEOS = gql`
 
 export const GET_POINTS = gql`
   query GetAllPoints(
-    $filter: Boolean
+    $filter: String
     $limit: Int
     $page: Int
     $search: String
@@ -55,6 +55,9 @@ export const GET_POINTS = gql`
         points
         price
         trxId
+        status
+        createdAt
+        updatedAt
         user {
           _id
           email
@@ -68,10 +71,10 @@ export const GET_POINTS = gql`
 export const LOGIN = gql`
   mutation Login($loginInput: LoginInput!) {
     login(loginInput: $loginInput) {
+      message
       user {
         _id
       }
-      message
     }
   }
 `;
@@ -89,7 +92,6 @@ export const REGISTER = gql`
       user {
         _id
         email
-        password
         role
         watchPoint
       }
@@ -99,16 +101,29 @@ export const REGISTER = gql`
 
 export const BUY_POINTS = gql`
   mutation BuyPoints($createPointInput: CreatePointInput!) {
-    createPoint(createPointInput: $createPointInput)
+    createPoint(createPointInput: $createPointInput) {
+      message
+      point {
+        _id
+        isApproved
+        phone
+        points
+        price
+        trxId
+      }
+    }
   }
 `;
 
 export const POST_VIDEO = gql`
-  mutation BuyPoints($createVideoInput: CreateVideoInput!) {
+  mutation PostVideo($createVideoInput: CreateVideoInput!) {
     createVideo(createVideoInput: $createVideoInput) {
-      _id
-      title
-      url
+      message
+      video {
+        _id
+        title
+        url
+      }
     }
   }
 `;
@@ -116,5 +131,17 @@ export const POST_VIDEO = gql`
 export const UPDATE_USER_POINT = gql`
   mutation UpdateUserPoint($updateUserInput: UpdateUserInput!) {
     updateUserPoint(updateUserInput: $updateUserInput)
+  }
+`;
+
+export const SEND_POINTS = gql`
+  mutation SendPoints($pointId: String!, $status: String!) {
+    sendPointsToUser(pointId: $pointId, status: $status) {
+      message
+      point {
+        isApproved
+        status
+      }
+    }
   }
 `;

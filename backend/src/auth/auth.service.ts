@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Response } from "express";
 import * as jwt from "jsonwebtoken";
@@ -21,7 +17,7 @@ export class AuthService {
     return jwt.verify(token, process.env.JWT_SECRET) as jwt.JwtPayload;
   };
 
-  async create(LoginInput: LoginInput): Promise<{ user: User; token: string }> {
+  async login(LoginInput: LoginInput): Promise<{ user: User; token: string }> {
     try {
       // Find the user by email
       const user = await this.userModel.findOne(
@@ -49,7 +45,7 @@ export class AuthService {
       return { user, token };
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException(error);
+      throw error;
     }
   }
 

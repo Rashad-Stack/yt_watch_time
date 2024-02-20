@@ -1,14 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { createContext, useEffect, useReducer } from "react";
 import { GET_SESSION } from "../lib/query";
-import { ActionType } from "../types";
-
-type User = {
-  id: string;
-  email: string;
-  watchPoint: number;
-  role: string;
-};
+import { ActionType, User } from "../types";
 
 type State = {
   user: User | null;

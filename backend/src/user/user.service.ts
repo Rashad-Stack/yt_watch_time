@@ -8,7 +8,6 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { CreateUserInput } from "./dto/create-user.input";
-import { UpdateUserInput } from "./dto/update-user.input";
 import { User, UserDocument } from "./schema/user.schema";
 
 @Injectable()
@@ -80,27 +79,31 @@ export class UserService {
     }
   }
 
-  async approveUpdatePoint(userId: Types.ObjectId, points: number) {
+  async approveUpdatePoint(
+    userId: Types.ObjectId | User,
+    pointId: Types.ObjectId,
+    points: number,
+  ) {
     try {
-      const user = await this.userModel.findByIdAndUpdate(
-        userId,
+      const user = await this.userModel.findOneAndUpdate(
+        {
+          _id: userId,
+          points: pointId,
+        },
         {
           $inc: { watchPoint: points },
+          $pull: { points: pointId },
         },
         { new: true },
       );
+
+      if (!user) {
+        throw new NotFoundException("Requested for Points no longer exist!");
+      }
 
       return user;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-  }
-
-  update(userId: Types.ObjectId, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${userId} user: ${updateUserInput.email}`;
-  }
-
-  remove(id: Types.ObjectId) {
-    return `This action removes a #${id} user`;
   }
 }

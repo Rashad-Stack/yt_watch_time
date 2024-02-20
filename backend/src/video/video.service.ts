@@ -7,7 +7,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { User, UserDocument } from "src/user/schema/user.schema";
 import { CreateVideoInput } from "./dto/create-video.input";
-import { UpdateVideoInput } from "./dto/update-video.input";
 import { PaginateVideo } from "./dto/videos.dto";
 import { Video, VideoDocument } from "./schema/video.schema";
 
@@ -84,22 +83,6 @@ export class VideoService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-  }
-
-  async findOne(id: Types.ObjectId): Promise<Video> {
-    try {
-      const video = await this.videoModel.findOne({
-        where: { _id: id },
-      });
-
-      return video;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
-  update(id: Types.ObjectId, updateVideoInput: UpdateVideoInput) {
-    return updateVideoInput;
   }
 
   async remove(videoId: Types.ObjectId): Promise<string> {

@@ -1,7 +1,9 @@
+import { InternalServerErrorException } from "@nestjs/common";
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { Document, Types } from "mongoose";
 import { User } from "src/user/schema/user.schema";
+import { Status } from "../dto/point.dto";
 
 @ObjectType()
 @Schema({ timestamps: true })
@@ -10,7 +12,7 @@ export class Point extends Document {
   _id: Types.ObjectId | Point;
 
   @Field(() => Int)
-  @Prop({ required: true, type: Number })
+  @Prop({ type: Number })
   points: number;
 
   @Field(() => Int)
@@ -26,26 +28,45 @@ export class Point extends Document {
   trxId: string;
 
   @Field(() => Boolean)
-  @Prop({ default: false, type: Boolean })
+  @Prop({ type: Boolean, default: false })
   isApproved: boolean;
+
+  @Field(() => String)
+  @Prop({ enum: Status, default: Status.Approve })
+  status: Status;
 
   @Field(() => User)
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
   user: Types.ObjectId | User;
+
+  @Field(() => String)
+  createdAt: Date;
+
+  @Field(() => String)
+  updatedAt: Date;
 }
 
 export type PointDocument = Point & Document;
 
 export const PointSchema = SchemaFactory.createForClass(Point);
 
-// populate the user field
+// Pre hooks for push the video to the user's videos array
+PointSchema.pre("save", async function (next) {
+  try {
+    // Calculate Points by price
+    this.points = this.price * 10;
 
-const populate = function (next) {
-  this.populate("user");
-  next();
-};
-
-// pre hooks
-PointSchema.pre("find", populate)
-  .pre("findOne", populate)
-  .pre("findOneAndUpdate", populate);
+    // Update User Point array
+    const User = this.model("User");
+    await User.updateOne(
+      { _id: this.user._id },
+      {
+        $push: { points: this._id },
+      },
+    );
+    next();
+  } catch (error) {
+    console.log(error);
+    throw new InternalServerErrorException(error);
+  }
+});

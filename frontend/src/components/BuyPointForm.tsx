@@ -28,14 +28,16 @@ export default function BuyPointForm() {
     data.points = Math.abs(data.price * 10);
     data.phone = data.phone.includes("+88") ? data.phone : `+88${data.phone}`;
 
-    console.log(data);
-
     toast.promise(
       buyPoints({
         variables: {
-          createPointInput: data,
+          createPointInput: {
+            phone: data.phone,
+            price: data.price,
+            trxId: data.trxId,
+          },
         },
-        onQueryUpdated: () => {
+        onCompleted: () => {
           const dialog = document.getElementById(
             "buyPoint",
           ) as HTMLDialogElement;
@@ -45,7 +47,7 @@ export default function BuyPointForm() {
       }),
       {
         loading: "Sending...",
-        success: ({ data }) => data.createPoint,
+        success: ({ data }) => data.createPoint.message,
         error: (error) => handleError(error),
       },
     );

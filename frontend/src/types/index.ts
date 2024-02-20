@@ -5,6 +5,12 @@ export enum ActionType {
   SET_VIDEO = "videos/setVideo",
 }
 
+export enum Status {
+  Declean = "Declean",
+  Approved = "Approved",
+  Approve = "Approve",
+}
+
 export type Inputs = {
   email: string;
   password: string;
@@ -32,5 +38,8 @@ export type Points = {
   points: number;
   price: number;
   trxId: string;
+  status: Status;
   user: User;
+  createdAt: Date;
+  updatedAt: Date;
 };
