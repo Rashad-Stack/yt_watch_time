@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Button, Navbar } from "flowbite-react";
+import { Link } from "react-router-dom";
 import { GET_SESSION } from "../lib/query";
 import AddVideo from "./AddVideo";
 import AppModal from "./AppModal";
@@ -65,7 +66,7 @@ export default function Header() {
               <div className="skeleton h-4 w-32 !rounded-lg" />
             ) : (
               <Navbar.Link active className="flex items-center gap-2">
-                Watch Point:{" "}
+                Watch Points:{" "}
                 {loading ? (
                   <span className="loading loading-spinner h-3 w-3" />
                 ) : (
@@ -73,6 +74,7 @@ export default function Header() {
                 )}
               </Navbar.Link>
             )}
+
             {loading ? (
               <div className="skeleton h-4 w-32 !rounded-lg" />
             ) : (
@@ -109,6 +111,16 @@ export default function Header() {
                 >
                   Add Video
                 </Navbar.Link>
+              )
+            )}
+
+            {loading ? (
+              <div className="skeleton h-4 w-32 !rounded-lg" />
+            ) : (
+              user && (
+                <Link className="cursor-pointer" to="/my-videos">
+                  My Videos
+                </Link>
               )
             )}
           </Navbar.Collapse>

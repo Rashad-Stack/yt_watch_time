@@ -15,8 +15,9 @@ export default function ProtectedRoute({ children }: Props) {
   useEffect(() => {
     if (user && user.role === "admin") {
       return navigate("/dashboard");
+    } else if (!user) {
+      return navigate("/");
     }
-    navigate("/");
   }, [user, navigate]);
 
   return loading ? (
