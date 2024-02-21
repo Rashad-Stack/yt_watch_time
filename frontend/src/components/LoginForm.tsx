@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client";
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { handleError } from "../lib/handleError";
 import { GET_SESSION, LOGIN } from "../lib/query";
 
@@ -35,6 +36,8 @@ export default function Login() {
     formState: { errors },
   } = useForm<Inputs>({ defaultValues: initialState });
 
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     toast.promise(
       login({
@@ -44,12 +47,7 @@ export default function Login() {
             password: data.password,
           },
         },
-        onCompleted: () => {
-          const dialog = document.getElementById(
-            "authForm",
-          ) as HTMLDialogElement;
-          dialog.close();
-        },
+        onCompleted: () => navigate(-1),
       }),
       {
         loading: "Logging in...",

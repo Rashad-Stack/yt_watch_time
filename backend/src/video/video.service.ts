@@ -85,6 +85,27 @@ export class VideoService {
     }
   }
 
+  async myVideos(
+    limit: number,
+    page: number,
+    userId: Types.ObjectId,
+  ): Promise<PaginateVideo> {
+    const videos = await this.videoModel
+      .find({ user: userId })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const totalVideos = await this.videoModel.countDocuments({ user: userId });
+
+    const pages = Math.ceil(totalVideos / limit);
+
+    return {
+      totalVideos,
+      pages,
+      videos,
+    };
+  }
+
   async remove(videoId: Types.ObjectId): Promise<string> {
     try {
       const video = await this.videoModel.findOneAndDelete({ _id: videoId });

@@ -1,5 +1,4 @@
 import { useMutation } from "@apollo/client";
-import { Button } from "flowbite-react";
 import toast from "react-hot-toast";
 import { handleError } from "../lib/handleError";
 import { GET_SESSION, LOGOUT } from "../lib/query";
@@ -23,7 +22,11 @@ export default function Logout() {
   };
 
   return (
-    <Button onClick={handleLogout} disabled={loading}>
+    <button
+      onClick={handleLogout}
+      disabled={loading}
+      className="w-full text-start"
+    >
       {loading ? (
         <span className="flex items-center gap-4">
           <span className="loading loading-spinner loading-xs" /> Loading
@@ -31,6 +34,6 @@ export default function Logout() {
       ) : (
         "Logout"
       )}
-    </Button>
+    </button>
   );
 }

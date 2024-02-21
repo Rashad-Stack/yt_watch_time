@@ -37,6 +37,19 @@ export const GET_VIDEOS = gql`
     }
   }
 `;
+export const MY_VIDEOS = gql`
+  query MyVideos($limit: Float, $page: Float) {
+    myVideos(limit: $limit, page: $page) {
+      pages
+      totalVideos
+      videos {
+        _id
+        title
+        url
+      }
+    }
+  }
+`;
 
 export const GET_POINTS = gql`
   query GetAllPoints(

@@ -8,6 +8,9 @@ export class PaginateVideo {
 
   @Field(() => Int)
   totalVideos: number;
+
+  @Field(() => Int, { nullable: true })
+  pages?: number;
 }
 
 @ObjectType("newVideo")

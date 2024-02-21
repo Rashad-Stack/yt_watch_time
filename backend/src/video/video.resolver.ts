@@ -42,6 +42,16 @@ export class VideoResolver {
     return this.videoService.findAll(limit, page);
   }
 
+  @Query(() => PaginateVideo, { name: "myVideos" })
+  @UseGuards(AuthGuard)
+  async myVideos(
+    @Args("limit", { defaultValue: 12 }) limit: number,
+    @Args("page", { defaultValue: 1 }) page: number,
+    @CurrentUser() user: Types.ObjectId,
+  ): Promise<PaginateVideo> {
+    return await this.videoService.myVideos(limit, page, user);
+  }
+
   @Mutation(() => String)
   @UseGuards(AuthGuard)
   async removeVideo(
