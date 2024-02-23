@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import Empty from "../components/Empty";
 import ErrorMessage from "../components/ErrorMessage";
 import LoadingSkeleton from "../components/LoadingSkeleton";
-import VideoCard from "../components/VideoCard";
+import MyVideosCard from "../components/MyVideosCard";
 import VideoCardSkeleton from "../components/VideoCardSkeleton";
 import { handleError } from "../lib/handleError";
 import { MY_VIDEOS } from "../lib/query";
@@ -27,7 +27,7 @@ export default function MyVideos() {
         videos &&
         videos.length > 0 &&
         videos.map((video: Video) => (
-          <VideoCard key={video._id} video={video} />
+          <MyVideosCard key={video._id} video={video} />
         ))
       )}
     </div>

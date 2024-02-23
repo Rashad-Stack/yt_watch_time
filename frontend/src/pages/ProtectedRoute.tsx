@@ -13,12 +13,14 @@ export default function ProtectedRoute({ children }: Props) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user && user.role === "admin") {
-      return navigate("/dashboard");
-    } else if (!user) {
-      return navigate("/");
+    if (!loading) {
+      if (user && user.role === "admin") {
+        return navigate("/dashboard");
+      } else if (!user) {
+        return navigate("/");
+      }
     }
-  }, [user, navigate]);
+  }, [user, navigate, loading]);
 
   return loading ? (
     <div className="absolute inset-0 flex items-center justify-center">

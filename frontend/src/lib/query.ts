@@ -37,6 +37,7 @@ export const GET_VIDEOS = gql`
     }
   }
 `;
+
 export const MY_VIDEOS = gql`
   query MyVideos($limit: Float, $page: Float) {
     myVideos(limit: $limit, page: $page) {
@@ -156,5 +157,11 @@ export const SEND_POINTS = gql`
         status
       }
     }
+  }
+`;
+
+export const DELETE_VIDEO = gql`
+  mutation DeleteVideo($videoId: String!) {
+    removeVideo(videoId: $videoId)
   }
 `;

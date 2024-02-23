@@ -6,7 +6,13 @@ export default function BuyPoint() {
     <div className="pt-6">
       <Card
         className="max-w-sm"
-        imgSrc="https://download.logo.wine/logo/BKash/BKash-Icon2-Logo.wine.png"
+        renderImage={() => (
+          <img
+            src="https://download.logo.wine/logo/BKash/BKash-Icon2-Logo.wine.png"
+            className="h-40 w-40 rounded-full object-cover"
+            alt="bKash"
+          />
+        )}
         horizontal
       >
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
