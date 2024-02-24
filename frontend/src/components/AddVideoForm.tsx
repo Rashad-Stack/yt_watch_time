@@ -3,6 +3,7 @@ import { Button, Label, TextInput } from "flowbite-react";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { handleError } from "../lib/handleError";
 import { GET_VIDEOS, POST_VIDEO } from "../lib/query";
 
@@ -27,6 +28,8 @@ export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
     formState: { errors },
   } = useForm<Inputs>();
 
+  const navigate = useNavigate();
+
   const urls = ["youtu.be", "youtube"];
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
@@ -39,10 +42,7 @@ export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
         onCompleted: () => {
           reset();
           setVideoUrl("");
-          const dialog = document.getElementById(
-            "addVideo",
-          ) as HTMLDialogElement;
-          dialog.close();
+          navigate(-1);
         },
       }),
       {

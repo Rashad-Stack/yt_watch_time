@@ -84,7 +84,7 @@ export default function Dashboard() {
                         <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                           {point.user.email} <br />{" "}
                           <span className="text-xs text-gray-300">
-                            {formattedDate(point.createdAt)} /
+                            {formattedDate(point.createdAt)} /{" "}
                             {formattedDate(point.updatedAt)}
                           </span>
                         </Table.Cell>
@@ -104,7 +104,7 @@ export default function Dashboard() {
                     <div className="flex justify-between">
                       <Limit />
                       <div className="flex items-center overflow-x-auto sm:justify-center">
-                        <Paginate pages={pages} />
+                        <Paginate pages={pages || 1} />
                       </div>
                     </div>
                   </Table.HeadCell>

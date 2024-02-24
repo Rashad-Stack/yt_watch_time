@@ -72,4 +72,14 @@ export class PointsResolver {
       message: "Sended",
     };
   }
+
+  @Query(() => PaginatePoints, { name: "pointRequest" })
+  @UseGuards(AuthGuard)
+  async pointRequest(
+    @CurrentUser() user: Types.ObjectId,
+    @Args("page", { type: () => Int, defaultValue: 1 }) page: number,
+    @Args("limit", { type: () => Int, defaultValue: 20 }) limit: number,
+  ): Promise<PaginatePoints> {
+    return this.pointsService.pointRequest(user, page, limit);
+  }
 }

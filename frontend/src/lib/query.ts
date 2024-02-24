@@ -81,6 +81,26 @@ export const GET_POINTS = gql`
   }
 `;
 
+export const GET_POINT_REQUEST = gql`
+  query GetPointRequest($limit: Int, $page: Int) {
+    pointRequest(limit: $limit, page: $page) {
+      total
+      pages
+      points {
+        _id
+        isApproved
+        phone
+        points
+        price
+        trxId
+        status
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
 // MUTATIONS
 export const LOGIN = gql`
   mutation Login($loginInput: LoginInput!) {
@@ -106,6 +126,7 @@ export const REGISTER = gql`
       user {
         _id
         email
+        password
         role
         watchPoint
       }

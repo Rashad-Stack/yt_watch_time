@@ -42,13 +42,13 @@ export default function Profile() {
           </Dropdown.Item>
           {AuthMenuItems.map((item) => (
             <Dropdown.Item key={item.name}>
-              <Link to={item.url}>{item.name}</Link>
+              <Link to={item.url} className="w-full text-start">
+                {item.name}
+              </Link>
             </Dropdown.Item>
           ))}
           <Dropdown.Divider />
-          <Dropdown.Item>
-            <Logout />
-          </Dropdown.Item>
+          <Logout />
         </Dropdown>
       ) : (
         <Link

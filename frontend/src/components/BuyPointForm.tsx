@@ -2,8 +2,9 @@ import { useMutation } from "@apollo/client";
 import { Button, Label, TextInput } from "flowbite-react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { handleError } from "../lib/handleError";
-import { BUY_POINTS } from "../lib/query";
+import { BUY_POINTS, GET_POINT_REQUEST } from "../lib/query";
 
 type Inputs = {
   points: number;
@@ -23,6 +24,8 @@ export default function BuyPointForm() {
     formState: { errors },
   } = useForm<Inputs>();
 
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     data.price = Number(data.price) || 1;
     data.points = Math.abs(data.price * 10);
@@ -37,12 +40,10 @@ export default function BuyPointForm() {
             trxId: data.trxId,
           },
         },
+        refetchQueries: [{ query: GET_POINT_REQUEST }],
         onCompleted: () => {
-          const dialog = document.getElementById(
-            "buyPoint",
-          ) as HTMLDialogElement;
-          dialog.close();
           reset();
+          navigate(-1);
         },
       }),
       {

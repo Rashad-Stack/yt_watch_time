@@ -101,4 +101,27 @@ export class PointsService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async pointRequest(user: Types.ObjectId, page: number, limit: number) {
+    try {
+      const points = await this.pointModel
+        .find({ user: user })
+        .populate("user")
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({ createdAt: -1 });
+
+      const total = await this.pointModel.countDocuments({ user: user });
+
+      const pages = Math.ceil(total / limit);
+
+      return {
+        total,
+        points,
+        pages,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

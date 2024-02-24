@@ -2,8 +2,9 @@ import { useMutation } from "@apollo/client";
 import { Button, Label, TextInput } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { handleError } from "../lib/handleError";
-import { GET_SESSION, REGISTER } from "../lib/query";
+import { REGISTER } from "../lib/query";
 
 type Inputs = {
   email: string;
@@ -21,6 +22,8 @@ export default function Register() {
     formState: { errors },
   } = useForm<Inputs>();
 
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     toast.promise(
       signUp({
@@ -30,13 +33,10 @@ export default function Register() {
             password: data.password,
           },
         },
-        refetchQueries: [{ query: GET_SESSION }],
+
         onCompleted: () => {
-          const dialog = document.getElementById(
-            "authForm",
-          ) as HTMLDialogElement;
-          dialog.close();
           reset();
+          navigate(-1);
         },
       }),
       {
