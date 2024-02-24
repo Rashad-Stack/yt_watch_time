@@ -1,15 +1,14 @@
-import { useQuery } from "@apollo/client";
 import { Pagination } from "flowbite-react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { GET_POINTS } from "../lib/query";
 
-export default function Paginate() {
-  const { data } = useQuery(GET_POINTS);
+type Props = {
+  pages: number;
+};
+
+export default function Paginate({ pages }: Props) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const pages = data?.points?.Pages || 1;
 
   const onPageChange = (page: number) => {
     setCurrentPage(page);

@@ -23,4 +23,8 @@ export const AuthMenuItems = [
     name: "Buy Points",
     url: "?modal=buy-points",
   },
+  {
+    name: "Transaction History",
+    url: "trx-history",
+  },
 ];

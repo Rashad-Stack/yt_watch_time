@@ -30,7 +30,7 @@ export default function Dashboard() {
     },
   });
 
-  const { total, points } = data?.points || {};
+  const { total, points, pages } = data?.points || {};
 
   return (
     <section>
@@ -104,7 +104,7 @@ export default function Dashboard() {
                     <div className="flex justify-between">
                       <Limit />
                       <div className="flex items-center overflow-x-auto sm:justify-center">
-                        <Paginate />
+                        <Paginate pages={pages} />
                       </div>
                     </div>
                   </Table.HeadCell>

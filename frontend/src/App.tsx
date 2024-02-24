@@ -6,6 +6,7 @@ import HowItWorks from "./pages/HowItWorks";
 import Layout from "./pages/Layout";
 import MyVideos from "./pages/MyVideos";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import TrxHistory from "./pages/TrxHistory";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="my-videos" element={<MyVideos />} />
+          <Route path="trx-history" element={<TrxHistory />} />
         </Route>
         <Route index element={<Home />} />
         <Route path="how-it-works" element={<HowItWorks />} />
