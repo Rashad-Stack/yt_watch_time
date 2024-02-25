@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { MongooseModule } from "@nestjs/mongoose";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { AuthModule } from "./auth/auth.module";
 import { PointsModule } from "./points/points.module";
@@ -11,6 +12,11 @@ import { VideoModule } from "./video/video.module";
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "client"),
+      exclude: ["/graphql/(.*)"],
+    }),
+
     ConfigModule.forRoot(),
 
     MongooseModule.forRoot(process.env.MONGO_URI),
