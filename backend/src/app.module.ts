@@ -5,6 +5,8 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { PointsModule } from "./points/points.module";
 import { UserModule } from "./user/user.module";
@@ -37,7 +39,7 @@ import { VideoModule } from "./video/video.module";
     VideoModule,
     PointsModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
