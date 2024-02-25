@@ -3,9 +3,8 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { MongooseModule } from "@nestjs/mongoose";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { PointsModule } from "./points/points.module";
 import { UserModule } from "./user/user.module";
@@ -13,6 +12,11 @@ import { VideoModule } from "./video/video.module";
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "client/dist"),
+      exclude: ["/graphql/(.*)"],
+    }),
+
     ConfigModule.forRoot(),
 
     MongooseModule.forRoot(process.env.MONGO_URI),
@@ -33,7 +37,7 @@ import { VideoModule } from "./video/video.module";
     VideoModule,
     PointsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
