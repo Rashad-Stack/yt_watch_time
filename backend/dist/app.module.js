@@ -12,8 +12,9 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const graphql_1 = require("@nestjs/graphql");
 const mongoose_1 = require("@nestjs/mongoose");
-const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
+const app_controller_1 = require("./app.controller");
+const app_service_1 = require("./app.service");
 const auth_module_1 = require("./auth/auth.module");
 const points_module_1 = require("./points/points.module");
 const user_module_1 = require("./user/user.module");
@@ -24,10 +25,6 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            serve_static_1.ServeStaticModule.forRoot({
-                rootPath: (0, path_1.join)(__dirname, "..", "client"),
-                exclude: ["/graphql/(.*)"],
-            }),
             config_1.ConfigModule.forRoot(),
             mongoose_1.MongooseModule.forRoot(process.env.MONGO_URI),
             graphql_1.GraphQLModule.forRoot({
@@ -43,8 +40,8 @@ exports.AppModule = AppModule = __decorate([
             video_module_1.VideoModule,
             points_module_1.PointsModule,
         ],
-        controllers: [],
-        providers: [],
+        controllers: [app_controller_1.AppController],
+        providers: [app_service_1.AppService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
