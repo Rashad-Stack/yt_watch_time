@@ -56,7 +56,7 @@ export default function Home() {
         ))}
 
       {totalVideos !== videos.length && (
-        <Button onClick={LoadMore} className="mx-auto mt-4">
+        <Button onClick={LoadMore} className="mx-auto my-4">
           Load more
         </Button>
       )}

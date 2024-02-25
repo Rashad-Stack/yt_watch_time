@@ -5,7 +5,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { handleError } from "../lib/handleError";
-import { GET_VIDEOS, POST_VIDEO } from "../lib/query";
+import { GET_VIDEOS, MY_VIDEOS, POST_VIDEO } from "../lib/query";
 
 type Props = {
   setVideoUrl: React.Dispatch<React.SetStateAction<string>>;
@@ -38,7 +38,7 @@ export default function AddVideoForm({ setVideoUrl, videoLength }: Props) {
         variables: {
           createVideoInput: data,
         },
-        refetchQueries: [{ query: GET_VIDEOS }],
+        refetchQueries: [{ query: GET_VIDEOS }, { query: MY_VIDEOS }],
         onCompleted: () => {
           reset();
           setVideoUrl("");
